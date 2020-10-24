@@ -1,3 +1,11 @@
+/* Team 2 */
+/* DatabasePros */
+/* Vokhob Bazorov - vkb4@pitt.edu */
+/* Luiza Urazaeva - lau4@pitt.edu */
+/* Nathaniel Stump - nrs70@pitt.edu */
+
+/* Task 1 */
+
 DROP TABLE IF EXISTS Airline CASCADE;
 DROP TABLE IF EXISTS Customer CASCADE;
 DROP TABLE IF EXISTS Flight CASCADE;
