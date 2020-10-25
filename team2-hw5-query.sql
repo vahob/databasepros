@@ -8,4 +8,32 @@
 
 /* Task 3 */
 
+CREATE OR REPLACE FUNCTION isPlaneFull(flight_num INTEGER)
+RETURNS BOOLEAN
+AS $$
+    DECLARE 
+            capacity Plane.plane_capacity%TYPE;
+            passenger_count INTEGER;
+    BEGIN
+        SELECT plane_capacity INTO capacity
+        FROM Flight F NATURAL JOIN Plane P
+        WHERE flight_number = flight_num;
+
+        SELECT COUNT(reservation_number) INTO passenger_count
+        FROM Reservation_Detail
+        WHERE flight_number = flight_num
+        GROUP by flight_number;
+
+        IF passenger_count >= capacity
+        THEN RETURN TRUE;
+        ELSE RETURN FALSE;
+        END IF;
+    END
+$$ LANGUAGE plpgsql;
+
+
+SELECT isPlaneFull(3);
+
+
+
 /* Task 4 */
