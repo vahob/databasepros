@@ -15,7 +15,6 @@ DROP TABLE IF EXISTS Price CASCADE;
 DROP TABLE IF EXISTS Reservation CASCADE;
 DROP TABLE IF EXISTS Reservation_Detail CASCADE;
 
-
 CREATE TABLE Airline (
    airline_id INTEGER,
    airline_name varchar(50) NOT NULL,
@@ -50,8 +49,6 @@ CREATE TABLE Flight (
     CONSTRAINT FK_Flight1 FOREIGN KEY (plane_type) REFERENCES Plane(plane_type),
     CONSTRAINT FK_Flight2 FOREIGN KEY (airline_id) REFERENCES Airline(airline_id)
 );
-
-
 
 CREATE TABLE Price (
     departure_city CHAR(3),
@@ -95,7 +92,6 @@ CREATE TABLE Reservation (
     CONSTRAINT FK_Reservation2 FOREIGN KEY (credit_card_num) REFERENCES Customer(credit_card_num)
 );
 
-
 CREATE TABLE Reservation_Detail (
     reservation_number INTEGER, 
     flight_number INTEGER NOT NULL,
@@ -105,6 +101,7 @@ CREATE TABLE Reservation_Detail (
     CONSTRAINT FK_Reservation_Detail1 FOREIGN KEY (reservation_number) REFERENCES Reservation(reservation_number),
     CONSTRAINT FK_Reservation_Detail2 FOREIGN KEY (flight_number) REFERENCES Flight(flight_number)
 );
+
 CREATE TABLE OurTimestamp (
     c_timestamp TIMESTAMP,
     CONSTRAINT PK_OurTimestamp PRIMARY KEY (c_timestamp)

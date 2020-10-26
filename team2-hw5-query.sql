@@ -31,9 +31,34 @@ AS $$
     END
 $$ LANGUAGE plpgsql;
 
-
 SELECT isPlaneFull(3);
 
-
-
 /* Task 4 */
+
+CREATE OR REPLACE PROCEDURE makeReservation
+(
+    cid INTEGER NOT NULL,
+    start_city CHAR(3),
+    destination_city CHAR(3)
+)
+AS $$
+    DECLARE
+       reservation_date OurTimestamp.c_timestamp%TYPE
+    BEGIN
+        WITH possible_starting_flights AS
+        (
+            SELECT *
+            FROM flight
+            WHERE departure_city = start_city;
+        ),
+        possible_ending_flights AS
+        (
+            SELECT *
+            FROM flight
+            WHERE arrival_city = destination_city;
+        )
+        
+    END
+$$ LANGUAGE plpgsql;
+
+SELECT makeReservation();
