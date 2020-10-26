@@ -37,13 +37,14 @@ SELECT isPlaneFull(3);
 
 CREATE OR REPLACE PROCEDURE makeReservation
 (
-    cid INTEGER NOT NULL,
+    cid INTEGER,
     start_city CHAR(3),
     destination_city CHAR(3)
 )
 AS $$
     DECLARE
-       reservation_date OurTimestamp.c_timestamp%TYPE
+       reservation_date OurTimestamp.c_timestamp%TYPE;
+       temp_arrival_city CHAR(3);
     BEGIN
         WITH possible_starting_flights AS
         (
@@ -57,7 +58,11 @@ AS $$
             FROM flight
             WHERE arrival_city = destination_city;
         )
-        
+        WHILE destination_city != temp_arrival_city
+            LOOP
+                
+            END LOOP
+    COMMIT;
     END
 $$ LANGUAGE plpgsql;
 
