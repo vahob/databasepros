@@ -6,6 +6,24 @@
 
 /* Task 2 */
 
+-- Assumed that the first leg is inserted first.
+
+CREATE OR REPLACE FUNCTION getCancellationTime(res_num INTEGER)
+RETURNS TIMESTAMP
+AS $$
+    DECLARE
+        res_date Reservation_Detail.flight_date%TYPE;
+    BEGIN
+        SELECT flight_date INTO res_date
+        FROM Reservation_Detail
+        WHERE reservation_number = res_num;
+        RETURN res_date - INTERVAL '12 HOURS';
+    END
+$$ LANGUAGE plpgsql;
+
+SELECT getCancellationTime(1);
+
+
 /* Task 3 */
 
 CREATE OR REPLACE FUNCTION isPlaneFull(flight_num INTEGER)
