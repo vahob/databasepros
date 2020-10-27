@@ -60,44 +60,46 @@ CREATE OR REPLACE PROCEDURE makeReservation
     leg INTEGER
 )
 AS $$
+    DECLARE
+        weekday Integer;
+		schedule CHAR(7);
     BEGIN
-        -- will need if statement to make sure the weekly schedule lines up
-        -- extracts the weekday (DOW) from departure date 
-        -- see if it lines up with the weekly schedule
-        -- 0-6, 0 is Sunday, 6 is Saturday
-        -- if instead of the cooresponding letter, there is a dash, raise an exception and/or exit the function
+        SELECT EXTRACT(DOW FROM departure_date) INTO weekday;
+        
+        SELECT weekly_schedule INTO schedule
+        FROM Flight
+        WHERE flight_number = flight_num;
+        
+        IF SUBSTRING(schedule, weekday, weekday) THEN
+           RAISE EXCEPTION 'No flight scheduled'
+           USING HINT = 'That airline does not fly on that day';
+        END IF;
+        
+        -- Add select statements here
+        -- Add time to departure date
+        
         INSERT INTO Reservation_Detail VALUES
         (
             reservation_number, 
             flight_num, 
-            to_TimeStamp(to_char(departure_date), 'YYYY-MM-DD'), 
+            to_TimeStamp(to_char(departure_date), 'MM-DD-YYYY'), -- must concatonate time to departure date before calling to_Timestamp
             leg
         );
     END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE PROCEDURE callMakeReservation
-(
-    flight_num INTEGER,
-    departure_date DATE,
-    leg INTEGER
-)
-AS $$
-    DECLARE
-        reservation_number Reservation.reservation_number%TYPE;
-        departure_date Reservation.reservation_date%TYPE;
-    BEGIN
-        CALL makeReservation(reservation_number, flight_num, reservation_date, leg);
-    END;
-$$ LANGUAGE plpgsql;
-
-
 BEGIN;
 INSERT INTO Reservation VALUES(50,1,1160, '6859941825383380', (SELECT * FROM ourTimeStamp), TRUE);
-CALL callMakeReservation(7, '11-02-2020', 1);
-CALL callMakeReservation(8, '11-03-2020', 2);
-CALL callMakeReservation(9, '11-04-2020', 3);
+CALL makeReservation(50, 7, '11-02-2020', 1);
+CALL makeReservation(50, 8, '11-03-2020', 2);
+CALL makeReservation(50, 9, '11-04-2020', 3);
 COMMIT;
+
+-- will need if statement to make sure the weekly schedule lines up
+-- extracts the weekday (DOW) from departure date 
+-- see if it lines up with the weekly schedule
+-- 0-6, 0 is Sunday, 6 is Saturday
+-- if instead of the cooresponding letter, there is a dash, raise an exception and/or exit the function
 
 -- the departure date that you are given is just a date, not a timestamp
 -- the first thing you need to do is take the date and see if it lines up with the weekly schedule of the flight (day of week)
