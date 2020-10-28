@@ -64,7 +64,7 @@ AS $$
         weekday Integer;
 		schedule CHAR(7);
         departure_time VARCHAR(4);
-        timestamp_string VARCHAR(15);
+        timestamp_string VARCHAR(20);
         full_timestamp TIMESTAMP;
     BEGIN
         SELECT EXTRACT(DOW FROM departure_date) INTO weekday;
@@ -73,7 +73,7 @@ AS $$
         FROM Flight
         WHERE flight_number = flight_num;
         
-        IF SUBSTRING(schedule, weekday, weekday) = '-' THEN
+        IF SUBSTRING(schedule, weekday+1, 1) = '-' THEN
            RAISE EXCEPTION 'No flight scheduled'
            USING HINT = 'That airline does not fly on that day';
         END IF;
@@ -84,8 +84,8 @@ AS $$
         FROM Flight
         WHERE flight_number = flight_num;
         
-        timestamp_string = CONCAT(TO_CHAR(departure_date, 'MM-DD-YYYY'), ' ', departure_time);
-        full_timestamp = to_TimeStamp(timestamp_string, 'MM-DD-YYYY HHMI');
+        timestamp_string = CONCAT(TO_CHAR(departure_date,'MM-DD-YYYY'), ' ', concat(SUBSTRING(departure_time,1,2), ':', SUBSTRING(departure_time,3)));
+        full_timestamp = to_TimeStamp(timestamp_string, 'MM-DD-YYYY HH24:MI:SS');
         
         INSERT INTO Reservation_Detail VALUES
         (
