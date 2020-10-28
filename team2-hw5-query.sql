@@ -78,8 +78,6 @@ AS $$
            USING HINT = 'That airline does not fly on that day';
         END IF;
         
-        -- Add select statements here
-        -- Add time to departure date
         SELECT Flight.departure_time INTO departure_time
         FROM Flight
         WHERE flight_number = flight_num;
@@ -91,7 +89,7 @@ AS $$
         (
             reservation_number, 
             flight_num, 
-            full_timestamp, -- must concatonate time to departure date before calling to_Timestamp
+            full_timestamp, 
             leg
         );
     END;
@@ -116,8 +114,6 @@ COMMIT;
 -- if it does line up, get the departure time from flights table
 -- take that string and concatonate it with the given string
 -- then convert to a timestamp and specify format
-
--- make "callMakeReservation" wrapper function to declare variables for reservation_number and reservation_date, then use these as arguments for makeReservation
 
 -- first insert into reservation
 -- then use data from the most recently inserted reservation to call make reservation

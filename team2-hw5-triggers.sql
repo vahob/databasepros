@@ -29,7 +29,6 @@ AS $$
         WHERE flight_number = NEW.flight_number;
         RETURN NEW;
     END
-
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER planeUpgrade
@@ -42,3 +41,19 @@ INSERT INTO Reservation VALUES(6,3,380, '4120892825130802', '11-05-2020 09:30:05
 INSERT INTO Reservation_Detail VALUES(6,3,'11-05-2020', 1);
 
 /* Task 6 */
+
+CREATE OR REPLACE FUNCTION remove_reservation()
+RETURNS TRIGGER
+AS $$
+    DECLARE
+    
+    BEGIN
+    
+    END
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER cancelReservation
+
+EXECUTE FUNCTION remove_reservation();
+
+
