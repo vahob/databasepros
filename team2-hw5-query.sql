@@ -63,6 +63,9 @@ AS $$
     DECLARE
         weekday Integer;
 		schedule CHAR(7);
+        departure_time VARCHAR(4);
+        timestamp_string VARCHAR(15);
+        full_timestamp TIMESTAMP;
     BEGIN
         SELECT EXTRACT(DOW FROM departure_date) INTO weekday;
         
@@ -70,19 +73,25 @@ AS $$
         FROM Flight
         WHERE flight_number = flight_num;
         
-        IF SUBSTRING(schedule, weekday, weekday) THEN
+        IF SUBSTRING(schedule, weekday, weekday) = '-' THEN
            RAISE EXCEPTION 'No flight scheduled'
            USING HINT = 'That airline does not fly on that day';
         END IF;
         
         -- Add select statements here
         -- Add time to departure date
+        SELECT Flight.departure_time INTO departure_time
+        FROM Flight
+        WHERE flight_number = flight_num;
+        
+        timestamp_string = CONCAT(TO_CHAR(departure_date, 'MM-DD-YYYY'), ' ', departure_time);
+        full_timestamp = to_TimeStamp(timestamp_string, 'MM-DD-YYYY HHMI');
         
         INSERT INTO Reservation_Detail VALUES
         (
             reservation_number, 
             flight_num, 
-            to_TimeStamp(to_char(departure_date), 'MM-DD-YYYY'), -- must concatonate time to departure date before calling to_Timestamp
+            full_timestamp, -- must concatonate time to departure date before calling to_Timestamp
             leg
         );
     END;
@@ -90,9 +99,9 @@ $$ LANGUAGE plpgsql;
 
 BEGIN;
 INSERT INTO Reservation VALUES(50,1,1160, '6859941825383380', (SELECT * FROM ourTimeStamp), TRUE);
-CALL makeReservation(50, 7, '11-02-2020', 1);
-CALL makeReservation(50, 8, '11-03-2020', 2);
-CALL makeReservation(50, 9, '11-04-2020', 3);
+CALL makeReservation(50, 1, '11-02-2020', 1);
+CALL makeReservation(50, 2, '11-03-2020', 2);
+CALL makeReservation(50, 3, '11-04-2020', 3);
 COMMIT;
 
 -- will need if statement to make sure the weekly schedule lines up
