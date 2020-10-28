@@ -101,7 +101,7 @@ BEGIN;
 INSERT INTO Reservation VALUES(50,1,1160, '6859941825383380', (SELECT * FROM ourTimeStamp), TRUE);
 CALL makeReservation(50, 1, '11-02-2020', 1);
 CALL makeReservation(50, 2, '11-03-2020', 2);
-CALL makeReservation(50, 3, '11-04-2020', 3);
+CALL makeReservation(50, 3, '11-05-2020', 3);
 COMMIT;
 
 -- will need if statement to make sure the weekly schedule lines up
