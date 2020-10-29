@@ -13,13 +13,31 @@ RETURNS TIMESTAMP
 AS $$
     DECLARE
         res_date Reservation_Detail.flight_date%TYPE;
+        flight_num Reservation_Detail.flight_number%TYPE;
+        departure_time Flight.departure_time%TYPE;
+        timestamp_string VARCHAR(20);
+        full_timestamp TIMESTAMP;
     BEGIN
-        SELECT flight_date INTO res_date
-        FROM Reservation_Detail
+        SELECT RD.flight_date INTO res_date
+        FROM Reservation_Detail RD
         WHERE reservation_number = res_num;
-        RETURN res_date - INTERVAL '12 HOURS';
+
+        SELECT RD.flight_number INTO flight_num
+        FROM Reservation_Detail RD
+        WHERE reservation_number = res_num;
+
+        SELECT Flight.departure_time INTO departure_time
+        FROM Flight
+        WHERE flight_number = flight_num;
+        
+        timestamp_string = CONCAT(TO_CHAR(res_date,'MM-DD-YYYY'), ' ', concat(SUBSTRING(departure_time,1,2), ':', SUBSTRING(departure_time,3)));
+        full_timestamp = to_TimeStamp(timestamp_string, 'MM-DD-YYYY HH24:MI:SS');
+
+
+        RETURN full_timestamp - INTERVAL '12 HOURS';
     END
 $$ LANGUAGE plpgsql;
+
 
 SELECT getCancellationTime(1);
 
