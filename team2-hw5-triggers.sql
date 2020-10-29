@@ -49,29 +49,30 @@ AS $$
         cancellationTime Timestamp;
     BEGIN
         cancellationTime = getCancellationTime();
-        SELECT INTO cancellation_time_flights
+        
+        CREATE TEMP TABLE cancellation_time_flights AS
+        SELECT *
         FROM Flight
         WHERE OurTimestamp.c_timestamp <= getCancellationTime(flight_number);
         
         -- join cancellation_time_flights with reservation details table
+        CREATE TEMP TABLE cancellation_time_flights_with_details AS
+        SELECT *
+        FROM cancellation_time_flights
+        JOIN Reservation_Detail ON flight_number;
         
         -- THEN join with Reservation where ticketed = FALSE
+        CREATE TEMP TABLE cancellation_time_flights_with_reservations_and_details AS
+        SELECT *
+        FROM cancellation_time_flights_with_details
+        JOIN Reservation ON reservation_number
+        WHERE Reservation.ticketed = FALSE;
         
         -- that will give you all the rows where it is non-ticketed and needs to be canceled
         -- cancel every row in this table
-        
         -- should only need a single loop
+        DELETE FROM cancellation_time_flights_with_reservations_and_details CASCADE;
         
-        -- delete where reservation number is in ... query result
-        
-        FOR ROW IN cancellation_time_flights LOOP
-            FOR ROW IN Reservation LOOP
-                DELETE FROM Reservation
-                WHERE Reservation.ticketed = FALSE AND Reservation.;
-                -- remove non-ticketed reservations from each of those flights
-                -- Delete from reservation_detail as well?
-            END LOOP;
-        END LOOP;
         -- downsize flights
     END
 $$ LANGUAGE plpgsql;
