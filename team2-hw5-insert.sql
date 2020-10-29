@@ -74,3 +74,36 @@ INSERT INTO Reservation_Detail VALUES(5,3,'11-05-2020', 2);
 INSERT INTO OurTimestamp VALUES('11-05-2020 02:15');
 INSERT INTO OurTimestamp VALUES('11-03-2020 20:25');
 INSERT INTO OurTimestamp VALUES('12-13-2020 22:05');
+
+-- Tests
+
+SELECT getCancellationTime(1);
+SELECT getCancellationTime(2);
+SELECT getCancellationTime(3);
+SELECT getCancellationTime(4);
+SELECT getCancellationTime(5);
+SELECT getCancellationTime(6);
+
+INSERT INTO Plane VALUES('A123','TestPlane',2, '09-16-2020', 1995, 5);
+INSERT INTO Flight VALUES(6,1,'A123', 'PIT', 'JFK', '1355', '1730', 'SMTWTFS');
+
+BEGIN;
+INSERT INTO Reservation VALUES(51,1,1160, '6859941825383380', (SELECT * FROM ourTimeStamp), TRUE);
+CALL makeReservation(51, 6, '11-02-2020', 1);
+CALL makeReservation(51, 6, '11-03-2020', 2);
+CALL makeReservation(51, 6, '11-05-2020', 3);
+COMMIT;
+
+SELECT * FROM FLIGHT
+SELECT * FROM RESERVATION
+
+ROLLBACK;
+
+SELECT isPlaneFull(1);
+SELECT isPlaneFull(2);
+SELECT isPlaneFull(3);
+SELECT isPlaneFull(4);
+SELECT isPlaneFull(5);
+SELECT isPlaneFull(6);
+
+-- Make an insert, delete, or update that causes the trigger to run then test output afterwords to see if it is as expected
