@@ -42,6 +42,36 @@ INSERT INTO Reservation_Detail VALUES(6,3,'11-05-2020', 1);
 
 /* Task 6 */
 
+CREATE OR REPLACE FUNCTION downgrade_plane(flight_num INTEGER, passenger_count INTEGER)
+RETURNS BOOLEAN
+AS $$
+    DECLARE
+
+    plane_cap Plane.plane_capacity%TYPE;
+    plane_type1 Flight.plane_type%TYPE;
+
+    BEGIN
+
+    SELECT plane_capacity INTO plane_cap
+    FROM Flight NATURAL JOIN Plane
+    WHERE flight_number = flight_num;
+
+    SELECT plane_type INTO plane_type1
+    FROM Plane
+    WHERE plane_capacity >= passenger_count AND plane_capacity < plane_cap
+    ORDER BY plane_capacity;
+    
+    IF plane_type1 IS NOT NULL THEN
+    UPDATE Flight
+    SET plane_type = plane_type1
+    WHERE flight_number = flight_num;
+    RETURN TRUE;
+    ELSE RETURN FALSE;
+    END IF;
+    END
+
+$$ LANGUAGE plpgsql;
+
 CREATE OR  REPLACE FUNCTION remove_reservation()
 RETURNS TRIGGER
 AS $$
@@ -50,24 +80,34 @@ AS $$
     time_stamp OurTimestamp.c_timestamp%TYPE;
     plane_cap Plane.plane_capacity%TYPE;
     plane_type1 Flight.plane_type%TYPE;
+    flight_num RECORD;
+    passenger_count INTEGER;
+
+    Flight_Nums CURSOR FOR 
+    SELECT flight_number
+    FROM Flight;
 
     BEGIN    
 
     DELETE FROM reservation
     WHERE ticketed ='false' and NEW.c_timestamp >= getCancellationTime(reservation_number);
 
-    SELECT plane_capacity INTO plane_cap
-    FROM Flight NATURAL JOIN Plane
-    WHERE flight_number = NEW.flight_number;
+    OPEN Flight_Nums;
+    LOOP
+    FETCH FLight_Nums INTO flight_num;
+    EXIT WHEN NOT FOUND;
 
-    SELECT plane_type INTO plane_type1
-    FROM Plane
-    WHERE plane_capacity > plane_cap
-    ORDER BY plane_capacity;
-    
-    UPDATE Flight
-    SET plane_type = plane_type1
-    WHERE flight_number = NEW.flight_number;
+    SELECT COUNT(reservation_number) INTO passenger_count
+    FROM Reservation_Detail
+    WHERE flight_number = flight_num.flight_number
+    GROUP by flight_number;
+
+    IF downgrade_plane(flight_num.flight_number, passenger_count) != TRUE
+    THEN RAISE Notice 'No plane was found with smaller capacity.';
+    END IF;
+
+    END LOOP;
+    CLOSE Flight_Nums;
 
 
     RETURN NEW;
