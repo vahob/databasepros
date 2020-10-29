@@ -74,6 +74,18 @@ AS $$
         DELETE FROM cancellation_time_flights_with_reservations_and_details CASCADE;
         
         -- downsize flights
+        -- for every flight
+        -- one or two supporting functions
+        -- function that given a plane and the company who owns it, find the next smallest plane for that company, and return it
+        -- function to determine if you need to switch the plane - find, given a flight, the number of reserved seats minus the one that has been deleted
+        -- find the new number of passangers for each flight, then see if the current airplane is too large, or the next smallest is sufficient
+        -- then execute the switch
+        
+        -- always simplify by breaking down into functions
+        
+        FOR LOOP
+            
+        END LOOP
     END
 $$ LANGUAGE plpgsql;
 
@@ -85,3 +97,5 @@ EXECUTE FUNCTION remove_reservation();
 
 -- Cancellation time is the time at which unpaid (ticketed = false) are removed from the table
 -- It has nothing to do with the flight itself being cancelled
+
+-- Functions are already atomic so do not need begin and commit keywords for this
