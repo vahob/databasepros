@@ -98,7 +98,8 @@ CREATE TABLE Reservation_Detail (
     flight_date TIMESTAMP NOT NULL,
     leg INTEGER NOT NULL,
     CONSTRAINT PK_Reservation_Detail PRIMARY KEY (reservation_number, leg),
-    CONSTRAINT FK_Reservation_Detail1 FOREIGN KEY (reservation_number) REFERENCES Reservation(reservation_number),
+    CONSTRAINT FK_Reservation_Detail1 FOREIGN KEY (reservation_number) 
+        REFERENCES Reservation(reservation_number) ON DELETE CASCADE,
     CONSTRAINT FK_Reservation_Detail2 FOREIGN KEY (flight_number) REFERENCES Flight(flight_number)
 );
 

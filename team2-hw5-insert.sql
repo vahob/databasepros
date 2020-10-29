@@ -72,8 +72,8 @@ INSERT INTO Reservation_Detail VALUES(5,3,'11-05-2020', 2);
 -- OurTimestap
 
 INSERT INTO OurTimestamp VALUES('11-05-2020 02:15');
-INSERT INTO OurTimestamp VALUES('11-03-2020 20:25');
-INSERT INTO OurTimestamp VALUES('12-13-2020 22:05');
+--INSERT INTO OurTimestamp VALUES('11-03-2020 20:25');
+--INSERT INTO OurTimestamp VALUES('12-13-2020 22:05');
 
 -- Tests
 
@@ -94,8 +94,8 @@ CALL makeReservation(51, 6, '11-03-2020', 2);
 CALL makeReservation(51, 6, '11-05-2020', 3);
 COMMIT;
 
-SELECT * FROM FLIGHT
-SELECT * FROM RESERVATION
+SELECT * FROM FLIGHT;
+SELECT * FROM RESERVATION;
 
 ROLLBACK;
 
@@ -107,3 +107,13 @@ SELECT isPlaneFull(5);
 SELECT isPlaneFull(6);
 
 -- Make an insert, delete, or update that causes the trigger to run then test output afterwords to see if it is as expected
+SELECT * from reservation;
+select * from reservation_detail;
+SELECT * from Flight;
+SELECT * from plane;
+
+-- OurTimestap
+
+INSERT INTO OurTimestamp VALUES('11-05-2020 02:15');
+--INSERT INTO OurTimestamp VALUES('11-03-2020 20:25');
+--INSERT INTO OurTimestamp VALUES('12-13-2020 22:05');

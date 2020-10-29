@@ -39,7 +39,7 @@ AS $$
 $$ LANGUAGE plpgsql;
 
 
-SELECT getCancellationTime(1);
+--  SELECT getCancellationTime(1);
 
 /* Task 3 */
 
@@ -66,7 +66,7 @@ AS $$
     END
 $$ LANGUAGE plpgsql;
 
-SELECT isPlaneFull(3);
+-- SELECT isPlaneFull(3);
 
 /* Task 4 */
 
@@ -112,13 +112,13 @@ AS $$
         );
     END;
 $$ LANGUAGE plpgsql;
-
-BEGIN;
+-- Uncomment to call the function.
+/* BEGIN;
 INSERT INTO Reservation VALUES(50,1,1160, '6859941825383380', (SELECT * FROM ourTimeStamp), TRUE);
 CALL makeReservation(50, 1, '11-02-2020', 1);
 CALL makeReservation(50, 2, '11-03-2020', 2);
 CALL makeReservation(50, 3, '11-05-2020', 3);
-COMMIT;
+COMMIT; */
 
 -- will need if statement to make sure the weekly schedule lines up
 -- extracts the weekday (DOW) from departure date 

@@ -37,8 +37,8 @@ FOR EACH ROW
 WHEN (isPlaneFull(NEW.flight_number))
 EXECUTE FUNCTION update_plane();
 
-INSERT INTO Reservation VALUES(6,3,380, '4120892825130802', '11-05-2020 09:30:05.000000', FALSE);
-INSERT INTO Reservation_Detail VALUES(6,3,'11-05-2020', 1);
+-- INSERT INTO Reservation VALUES(6,3,380, '4120892825130802', '11-05-2020 09:30:05.000000', FALSE);
+-- INSERT INTO Reservation_Detail VALUES(6,3,'11-05-2020', 1);
 
 /* Task 6 */
 
@@ -120,6 +120,11 @@ CREATE TRIGGER cancelReservation
 AFTER INSERT OR UPDATE ON OurTimestamp
 FOR EACH ROW
 EXECUTE FUNCTION remove_reservation();
+
+
+-- call to trigger
+
+--INSERT INTO OurTimestamp VALUES('11-05-2020 02:15');
 
 -- Cancellation time is the time at which unpaid (ticketed = false) are removed from the table
 -- It has nothing to do with the flight itself being cancelled
