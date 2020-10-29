@@ -42,54 +42,40 @@ INSERT INTO Reservation_Detail VALUES(6,3,'11-05-2020', 1);
 
 /* Task 6 */
 
-CREATE OR REPLACE FUNCTION remove_reservation()
+CREATE OR  REPLACE FUNCTION remove_reservation()
 RETURNS TRIGGER
 AS $$
     DECLARE
-        cancellationTime Timestamp;
-    BEGIN
-        cancellationTime = getCancellationTime();
-        
-        CREATE TEMP TABLE cancellation_time_flights AS
-        SELECT *
-        FROM Flight
-        WHERE OurTimestamp.c_timestamp <= getCancellationTime(flight_number);
-        
-        -- join cancellation_time_flights with reservation details table
-        CREATE TEMP TABLE cancellation_time_flights_with_details AS
-        SELECT *
-        FROM cancellation_time_flights
-        JOIN Reservation_Detail ON flight_number;
-        
-        -- THEN join with Reservation where ticketed = FALSE
-        CREATE TEMP TABLE cancellation_time_flights_with_reservations_and_details AS
-        SELECT *
-        FROM cancellation_time_flights_with_details
-        JOIN Reservation ON reservation_number
-        WHERE Reservation.ticketed = FALSE;
-        
-        -- that will give you all the rows where it is non-ticketed and needs to be canceled
-        -- cancel every row in this table
-        -- should only need a single loop
-        DELETE FROM cancellation_time_flights_with_reservations_and_details CASCADE;
-        
-        -- downsize flights
-        -- for every flight
-        -- one or two supporting functions
-        -- function that given a plane and the company who owns it, find the next smallest plane for that company, and return it
-        -- function to determine if you need to switch the plane - find, given a flight, the number of reserved seats minus the one that has been deleted
-        -- find the new number of passangers for each flight, then see if the current airplane is too large, or the next smallest is sufficient
-        -- then execute the switch
-        
-        -- always simplify by breaking down into functions
-        
-        FOR LOOP
-            
-        END LOOP
+
+    time_stamp OurTimestamp.c_timestamp%TYPE;
+    plane_cap Plane.plane_capacity%TYPE;
+    plane_type1 Flight.plane_type%TYPE;
+
+    BEGIN    
+
+    DELETE FROM reservation
+    WHERE ticketed ='false' and NEW.c_timestamp >= getCancellationTime(reservation_number);
+
+    SELECT plane_capacity INTO plane_cap
+    FROM Flight NATURAL JOIN Plane
+    WHERE flight_number = NEW.flight_number;
+
+    SELECT plane_type INTO plane_type1
+    FROM Plane
+    WHERE plane_capacity > plane_cap
+    ORDER BY plane_capacity;
+    
+    UPDATE Flight
+    SET plane_type = plane_type1
+    WHERE flight_number = NEW.flight_number;
+
+
+    RETURN NEW;
     END
+
 $$ LANGUAGE plpgsql;
 
--- This part is complete - any time OurTimestamp is updated, you just generally call remove_reservation once and handle all flights in one call
+
 CREATE TRIGGER cancelReservation
 AFTER INSERT OR UPDATE ON OurTimestamp
 FOR EACH ROW
