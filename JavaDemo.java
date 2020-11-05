@@ -7,16 +7,16 @@ public class JavaDemo {
     public static void main(String args[]) throws
             SQLException, ClassNotFoundException {
         Class.forName("org.postgresql.Driver");
-        String url = "jdbc:postgresql://localhost/postgres";
+        String url = "jdbc:postgresql://localhost/FinalProject";
         Properties props = new Properties();
         props.setProperty("user", "postgres");
-        props.setProperty("password", "password");
+        props.setProperty("password", "postgres");
         Connection conn =
                 DriverManager.getConnection(url, props);
 
         Statement st = conn.createStatement();
         String query1 =
-                "SELECT SID, Name, Major FROM recitation9.STUDENT WHERE Major='CS'";
+                "SELECT SID, Name, Major FROM recitation10.STUDENT WHERE Major='CS'";
         ResultSet res1 = st.executeQuery(query1);
         String rid;
         String rname, rmajor;

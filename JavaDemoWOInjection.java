@@ -9,16 +9,16 @@ public class JavaDemoWOInjection {
     public static void main(String args[]) throws
             SQLException, ClassNotFoundException {
         Class.forName("org.postgresql.Driver");
-        String url = "jdbc:postgresql://localhost/postgres";
+        String url = "jdbc:postgresql://localhost/FinalProject";
         Properties props = new Properties();
         props.setProperty("user", "postgres");
-        props.setProperty("password", "password");
+        props.setProperty("password", "postgres");
 Connection conn =
         DriverManager.getConnection(url, props);
 
 String username = "admin";
-String password = "1' OR '1'='1'; drop schema recitation9 cascade; select 'something";
-PreparedStatement stmt = conn.prepareStatement("SELECT * FROM recitation9.users WHERE username=? AND password=?");
+String password = "1' OR '1'='1'; drop schema recitation10 cascade; select 'something";
+PreparedStatement stmt = conn.prepareStatement("SELECT * FROM recitation10.users WHERE username=? AND password=?");
 stmt.setString(1, username);
 stmt.setString(2, password);
 ResultSet rs = stmt.executeQuery();

@@ -7,17 +7,17 @@ public class JavaDemoCursor {
     public static void main(String args[]) throws
             SQLException, ClassNotFoundException {
         Class.forName("org.postgresql.Driver");
-        String url = "jdbc:postgresql://localhost/postgres";
+        String url = "jdbc:postgresql://localhost/FinalProject";
         Properties props = new Properties();
         props.setProperty("user", "postgres");
-        props.setProperty("password", "password");
+        props.setProperty("password", "postgres");
         Connection dbcon =
                 DriverManager.getConnection(url, props);
 
         Statement st = dbcon.createStatement(
                 ResultSet.TYPE_SCROLL_INSENSITIVE,
                 ResultSet.CONCUR_READ_ONLY);
-        ResultSet resultSet = st.executeQuery("SELECT * FROM recitation9.STUDENT");
+        ResultSet resultSet = st.executeQuery("SELECT * FROM recitation10.STUDENT");
         int pos = resultSet.getRow();      // Get cursor position, pos = 0
         boolean b = resultSet.isBeforeFirst();    // true
         int rid;

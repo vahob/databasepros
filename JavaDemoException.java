@@ -7,10 +7,10 @@ public class JavaDemoException {
     public static void main(String args[]) throws
             SQLException, ClassNotFoundException {
         Class.forName("org.postgresql.Driver");
-        String url = "jdbc:postgresql://localhost/postgres";
+        String url = "jdbc:postgresql://localhost/FinalProject";
         Properties props = new Properties();
         props.setProperty("user", "postgres");
-        props.setProperty("password", "password");
+        props.setProperty("password", "postgres");
         Connection conn =
                 DriverManager.getConnection(url, props);
 
