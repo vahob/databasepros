@@ -37,14 +37,15 @@ public class Interface
         loop:
         while(true)
         {
-            System.out.print
+            System.out.println
             (
-                "Enter the number of the option you would like to select:\n" +
+                "\nMain Menu:\n" +
                 "1. Administrator interface\n" +
                 "2. Customer Interface\n" +
                 "3. Exit program\n"
             );
-            choice = Integer.parseInt(input.nextLine());
+            System.out.print("Enter option: ");
+            choice = input.nextInt();
             switch(choice)
             {
                 case 1:
@@ -55,9 +56,6 @@ public class Interface
                     break;
                 case 3:
                     break loop;
-                default:
-                    System.out.print("Please enter a valid option\n\n");
-                    break;
             }
         }
     }
@@ -85,7 +83,8 @@ public class Interface
                 "7. Update the current timestamp\n" +
                 "8. Return to main menu\n"
             );
-            choice = Integer.parseInt(input.nextLine());
+            System.out.print("Enter option: ");
+            choice = input.nextInt();
             switch(choice)
             {
                 case 1:
@@ -111,9 +110,6 @@ public class Interface
                     break;
                 case 8:
                     break loop;
-                default:
-                    System.out.print("Please enter a valid option\n\n");
-                    break;
             }
         }
     }
@@ -196,9 +192,9 @@ public class Interface
         loop:
         while(true)
         {
-            System.out.print
+            System.out.println
             (
-                "Enter the number of the option you would like to select:\n" +
+                "\nMenu:\n" +
                 "1. Add customer\n" +
                 "2. Show customer info, given customer name\n" +
                 "3. Find price for flights between two cities\n" +
@@ -214,7 +210,8 @@ public class Interface
                 "13. Rank the airlines based on customer satisfaction\n" +
                 "14. Return to main menu\n"
             );
-            choice = Integer.parseInt(input.nextLine());
+            System.out.print("Enter option: ");
+            choice = input.nextInt();
             switch(choice)
             {
                 case 1:
@@ -258,9 +255,6 @@ public class Interface
                     break;
                 case 14:
                     break loop;
-                default:
-                    System.out.print("Please enter a valid option\n\n");
-                    break;
             }
         }
     }
@@ -286,9 +280,10 @@ public class Interface
 
         System.out.print("Last name: ");
         String lastName = input.next();
-
+        
         System.out.print("House num and street name: ");
-        String street = input.next();
+        input.nextLine();
+        String street = input.nextLine();
 
         System.out.print("City: ");
         String city = input.next();
@@ -323,11 +318,7 @@ public class Interface
                 System.out.println("User with name " + firstName + " " + lastName  + " already exists.");
                 
                 stmt.close();
-                try {
-                    addCustomer();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                return;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -357,11 +348,16 @@ public class Interface
     
     public static void showCustomerInfo()
     {
-        System.out.print
+        System.out.println
         (
             "In the showCustomerInfo function\n" +
             "Function summary: Show customer info, given customer name\n\n"
         );
+        
+
+        
+
+
     }
     
     public static void findPrice()
