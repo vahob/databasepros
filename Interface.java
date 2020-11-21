@@ -37,15 +37,15 @@ public class Interface
         loop:
         while(true)
         {
-            System.out.println
+            System.out.print
             (
                 "\nMain Menu:\n" +
                 "1. Administrator interface\n" +
                 "2. Customer Interface\n" +
-                "3. Exit program\n"
+                "3. Exit program\n\n" +
+                "Enter option: "
             );
-            System.out.print("Enter option: ");
-            choice = input.nextInt();
+            choice = Integer.parseInt(input.nextLine());
             switch(choice)
             {
                 case 1:
@@ -56,6 +56,9 @@ public class Interface
                     break;
                 case 3:
                     break loop;
+                default:
+                    System.out.print("\nPlease enter a valid option\n");
+                    break;
             }
         }
     }
@@ -66,13 +69,14 @@ public class Interface
     
     public static void administratorInterface()
     {
-        System.out.print("You are now in the administrator interface\n\n");
+        System.out.print("\nYou are now in the administrator interface\n");
         int choice = -1;
         loop:
         while(true)
         {
             System.out.print
             (
+                "\nAdministrator Menu:\n" +
                 "Enter the number of the option you would like to select:\n" +
                 "1. Erase the database\n" +
                 "2. Load airline information\n" +
@@ -81,10 +85,10 @@ public class Interface
                 "5. Load plane information\n" +
                 "6. Generate passenger manifest for specific flight on given day\n" +
                 "7. Update the current timestamp\n" +
-                "8. Return to main menu\n"
+                "8. Return to main menu\n\n" +
+                "Enter option: "
             );
-            System.out.print("Enter option: ");
-            choice = input.nextInt();
+            choice = Integer.parseInt(input.nextLine());
             switch(choice)
             {
                 case 1:
@@ -110,6 +114,9 @@ public class Interface
                     break;
                 case 8:
                     break loop;
+                default:
+                    System.out.print("\nPlease enter a valid option\n");
+                    break;
             }
         }
     }
@@ -187,14 +194,14 @@ public class Interface
     
     public static void customerInterface() throws SQLException
     {
-        System.out.print("You are now in the customer interface\n\n");
+        System.out.print("\nYou are now in the customer interface\n");
         int choice = -1;
         loop:
         while(true)
         {
-            System.out.println
+            System.out.print
             (
-                "\nMenu:\n" +
+                "\nCustomer Menu:\n" +
                 "1. Add customer\n" +
                 "2. Show customer info, given customer name\n" +
                 "3. Find price for flights between two cities\n" +
@@ -208,10 +215,10 @@ public class Interface
                 "11. Find the top-k customers for each airline\n" +
                 "12. Find the top-k traveled customers for each airline\n" +
                 "13. Rank the airlines based on customer satisfaction\n" +
-                "14. Return to main menu\n"
+                "14. Return to main menu\n\n" +
+                "Enter option: "
             );
-            System.out.print("Enter option: ");
-            choice = input.nextInt();
+            choice = Integer.parseInt(input.nextLine());
             switch(choice)
             {
                 case 1:
@@ -255,6 +262,9 @@ public class Interface
                     break;
                 case 14:
                     break loop;
+                default:
+                    System.out.print("\nPlease enter a valid option\n");
+                    break;
             }
         }
     }
@@ -273,38 +283,37 @@ public class Interface
         System.out.println("All fields are required:");
 
         System.out.print("salutation (Mr/Mrs/Ms): ");
-        String salutation = input.next();
+        String salutation = input.nextLine();
 
         System.out.print("First name: ");
-        String firstName = input.next();
+        String firstName = input.nextLine();
 
         System.out.print("Last name: ");
-        String lastName = input.next();
+        String lastName = input.nextLine();
         
         System.out.print("House num and street name: ");
-        input.nextLine();
         String street = input.nextLine();
 
         System.out.print("City: ");
-        String city = input.next();
+        String city = input.nextLine();
 
         System.out.print("State: ");
-        String state = input.next();
+        String state = input.nextLine();
 
         System.out.print("Phone number: ");
-        String phone = input.next();
+        String phone = input.nextLine();
 
         System.out.print("Email address: ");
-        String email = input.next();
+        String email = input.nextLine();
 
         System.out.print("Credit card number: ");
-        String creditCardNumber = input.next();
+        String creditCardNumber = input.nextLine();
 
         System.out.print("Expiration date: ");
-        String expiration = input.next();
+        String expiration = input.nextLine();
 
         System.out.print("Frequent miles: ");
-        String frequentMiles = input.next();
+        String frequentMiles = input.nextLine();
         
         Statement stmt = conn.createStatement();
         try {
