@@ -31,7 +31,7 @@ public class Interface
     /*|                        Main Loop                          |*/
     /*|===========================================================|*/
     
-    public static void chooseInterface()
+    public static void chooseInterface() throws SQLException
     {
         int choice = -1;
         loop:
@@ -189,7 +189,7 @@ public class Interface
     /*|                     Customer Functions                    |*/
     /*|===========================================================|*/
     
-    public static void customerInterface()
+    public static void customerInterface() throws SQLException
     {
         System.out.print("You are now in the customer interface\n\n");
         int choice = -1;
@@ -265,13 +265,94 @@ public class Interface
         }
     }
     
-    public static void addCustomer()
+    public static void addCustomer() throws SQLException
     {
+        String sql;
+        int newCID=0;
         System.out.print
         (
             "In the addCustomer function\n" +
             "Function summary: Add customer\n\n"
         );
+
+       
+        System.out.println("All fields are required:");
+
+        System.out.print("salutation (Mr/Mrs/Ms): ");
+        String salutation = input.next();
+
+        System.out.print("First name: ");
+        String firstName = input.next();
+
+        System.out.print("Last name: ");
+        String lastName = input.next();
+
+        System.out.print("House num and street name: ");
+        String street = input.next();
+
+        System.out.print("City: ");
+        String city = input.next();
+
+        System.out.print("State: ");
+        String state = input.next();
+
+        System.out.print("Phone number: ");
+        String phone = input.next();
+
+        System.out.print("Email address: ");
+        String email = input.next();
+
+        System.out.print("Credit card number: ");
+        String creditCardNumber = input.next();
+
+        System.out.print("Expiration date: ");
+        String expiration = input.next();
+
+        System.out.print("Frequent miles: ");
+        String frequentMiles = input.next();
+        
+        Statement stmt = conn.createStatement();
+        try {
+
+            sql = "SELECT * FROM Customer WHERE first_name = \'" + firstName + 
+                            "\' AND last_name= \'" + lastName + "\'";
+            ResultSet res = stmt.executeQuery(sql);
+        
+
+            if(res.next()) {
+                System.out.println("User with name " + firstName + " " + lastName  + " already exists.");
+                
+                stmt.close();
+                try {
+                    addCustomer();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try{
+            sql = "SELECT COUNT(*) FROM Customer";
+            ResultSet res = stmt.executeQuery(sql);
+            if(res.next())
+            {
+                newCID = res.getInt(1);
+            }
+            newCID++; // next CID;
+            sql = "INSERT INTO Customer VALUES(" + newCID + ", \'" + salutation + "\', \'" + firstName + "\', \'" + lastName + "\', \'" + creditCardNumber + "\', \'" 
+                        + street + "\', TO_DATE(\'" + expiration + "\', 'MM-DD-YYYY'), \'" + city + "\', \'" + state + "\', \'" + phone + "\', \'" + email + "\', \'" + frequentMiles +"\')";
+
+            stmt.executeUpdate(sql);
+            stmt.close();
+            System.out.println("ID " + newCID + " was added successfully.");
+
+        } catch (SQLException e)
+        {
+            System.out.println("");
+            e.printStackTrace();
+        }
     }
     
     public static void showCustomerInfo()
