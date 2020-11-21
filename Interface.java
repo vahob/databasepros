@@ -55,6 +55,9 @@ public class Interface
                     break;
                 case 3:
                     break loop;
+                default:
+                    System.out.print("Please enter a valid option\n\n");
+                    break;
             }
         }
     }
@@ -108,6 +111,9 @@ public class Interface
                     break;
                 case 8:
                     break loop;
+                default:
+                    System.out.print("Please enter a valid option\n\n");
+                    break;
             }
         }
     }
@@ -252,6 +258,9 @@ public class Interface
                     break;
                 case 14:
                     break loop;
+                default:
+                    System.out.print("Please enter a valid option\n\n");
+                    break;
             }
         }
     }
