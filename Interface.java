@@ -346,18 +346,47 @@ public class Interface
         }
     }
     
-    public static void showCustomerInfo()
+    public static void showCustomerInfo() throws SQLException
     {
+        String sql;
         System.out.println
         (
             "In the showCustomerInfo function\n" +
             "Function summary: Show customer info, given customer name\n\n"
         );
+
+        System.out.println("Enter customer's first and last name.");
+        System.out.print("First name: ");
+        String firstName = input.next();
+
+        System.out.print("Last name: ");
+        String lastName = input.next();
+
+        Statement stmt = conn.createStatement();
+        try {
+
+            sql = "SELECT * FROM Customer WHERE first_name = \'" + firstName + 
+                            "\' AND last_name= \'" + lastName + "\'";
+            ResultSet res = stmt.executeQuery(sql);
         
 
-        
-
-
+            if(res.next()) {
+                System.out.println("\nINFO:\n" +
+                    res.getString(2) + ". " + res.getString(3) + " " + res.getString(4) + "\n" +
+                    "Credit card number: " + res.getString(5) + "\n" +
+                    "Expiration: " + res.getString(7) + "\n" + 
+                    "Address: " + res.getString(6) + ", " + res.getString(8) + ", " + res.getString(9) + "\n" +
+                    "Phone: " + res.getString(10) + "\n" +
+                    "Email: " + res.getString(11) + "\n" +
+                    "Frequent Miles: " + res.getString(12)
+                );
+                
+                stmt.close();
+                return;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
     
     public static void findPrice()
