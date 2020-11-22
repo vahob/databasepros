@@ -1,4 +1,5 @@
 import java.util.*;
+import java.io.*;
 import java.sql.*;
 
 public class Interface
@@ -164,7 +165,7 @@ public class Interface
             stmt.close();
             return;
         }
-        catch (SQLException e)
+        catch(SQLException e)
         {
             e.printStackTrace();
         }
@@ -175,8 +176,48 @@ public class Interface
         System.out.print
         (
             "In the loadAirlineInformation function\n" +
-            "Function summary: Load airline information\n\n"
+            "Function summary: Load airline information\n\n" +
+            "Please enter the name of the file to be loaded:"
         );
+        Scanner inputFile;
+        while(true)
+        {
+            try
+            {
+                inputFile = new Scanner(new File(input.nextLine()));
+                break;
+            }
+            catch(Exception e)
+            {
+                System.out.print("\nCould not find file. Please enter the name of a valid file to be loaded:");
+                continue;
+            }
+        }
+        while(inputFile.hasNext())
+        {
+            String[] tokens = inputFile.nextLine().split("\t");
+            try
+            {
+                Statement stmt = conn.createStatement();
+                String sql =
+                    (
+                        "INSERT INTO AIRLINE VALUES (" +
+                        Integer.parseInt(tokens[0]) + ", " +
+                        "\'" + tokens[1] + "\', " +
+                        "\'" + tokens[2] + "\', " +
+                        Integer.parseInt(tokens[3]) +
+                        ");"
+                    );
+                stmt.executeUpdate(sql);
+                stmt.close();
+            }
+            catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        inputFile.close();
+        System.out.print("Successfuly loaded all tuples into database\n");
     }
     
     public static void loadScheduleInformation()
