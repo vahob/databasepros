@@ -44,7 +44,15 @@ public class Interface
                 "3. Exit program\n\n" +
                 "Enter option: "
             );
-            choice = Integer.parseInt(input.nextLine());
+            try
+            {
+                choice = Integer.parseInt(input.nextLine());
+            }
+            catch(Exception e)
+            {
+                System.out.print("\nPlease enter a valid option\n");
+                continue;
+            }
             switch(choice)
             {
                 case 1:
@@ -87,7 +95,15 @@ public class Interface
                 "8. Return to main menu\n\n" +
                 "Enter option: "
             );
-            choice = Integer.parseInt(input.nextLine());
+            try
+            {
+                choice = Integer.parseInt(input.nextLine());
+            }
+            catch(Exception e)
+            {
+                System.out.print("\nPlease enter a valid option\n");
+                continue;
+            }
             switch(choice)
             {
                 case 1:
@@ -242,8 +258,15 @@ public class Interface
                 "14. Return to main menu\n\n" +
                 "Enter option: "
             );
-            
-            choice = Integer.parseInt(input.nextLine());
+            try
+            {
+                choice = Integer.parseInt(input.nextLine());
+            }
+            catch(Exception e)
+            {
+                System.out.print("\nPlease enter a valid option\n");
+                continue;
+            }
             switch(choice)
             {
                 case 1:
