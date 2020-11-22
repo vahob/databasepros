@@ -17,13 +17,12 @@ public class Interface
     /*|                          Setup                            |*/
     /*|===========================================================|*/
     
-    public static void setUpConnection() throws Exception
-    {
+    public static void setUpConnection() throws Exception {
         Class.forName("org.postgresql.Driver");
-        String url = "jdbc:postgresql://localhost/FinalProject";
+        String url = "jdbc:postgresql://localhost/postgres";
         Properties props = new Properties();
         props.setProperty("user", "postgres");
-        props.setProperty("password", "postgres");
+        props.setProperty("password", "cs1555");
         conn = DriverManager.getConnection(url, props);
     }
     
@@ -218,6 +217,7 @@ public class Interface
                 "14. Return to main menu\n\n" +
                 "Enter option: "
             );
+            
             choice = Integer.parseInt(input.nextLine());
             switch(choice)
             {
@@ -313,19 +313,17 @@ public class Interface
         String expiration = input.nextLine();
 
         System.out.print("Frequent miles: ");
-        String frequentMiles = input.nextLine();
-        
+        String frequentMiles = input.next();
+        input.nextLine(); // clears the buffer.
         Statement stmt = conn.createStatement();
         try {
 
-            sql = "SELECT * FROM Customer WHERE first_name = \'" + firstName + 
-                            "\' AND last_name= \'" + lastName + "\'";
+            sql = "SELECT * FROM Customer WHERE first_name = \'" + firstName + "\' AND last_name= \'" + lastName + "\'";
             ResultSet res = stmt.executeQuery(sql);
-        
 
-            if(res.next()) {
-                System.out.println("User with name " + firstName + " " + lastName  + " already exists.");
-                
+            if (res.next()) {
+                System.out.println("User with name " + firstName + " " + lastName + " already exists.");
+
                 stmt.close();
                 return;
             }
@@ -333,36 +331,32 @@ public class Interface
             e.printStackTrace();
         }
 
-        try{
+        try {
             sql = "SELECT COUNT(*) FROM Customer";
             ResultSet res = stmt.executeQuery(sql);
-            if(res.next())
-            {
+            if (res.next()) {
                 newCID = res.getInt(1);
             }
             newCID++; // next CID;
-            sql = "INSERT INTO Customer VALUES(" + newCID + ", \'" + salutation + "\', \'" + firstName + "\', \'" + lastName + "\', \'" + creditCardNumber + "\', \'" 
-                        + street + "\', TO_DATE(\'" + expiration + "\', 'MM-DD-YYYY'), \'" + city + "\', \'" + state + "\', \'" + phone + "\', \'" + email + "\', \'" + frequentMiles +"\')";
+            sql = "INSERT INTO Customer VALUES(" + newCID + ", \'" + salutation + "\', \'" + firstName + "\', \'"
+                    + lastName + "\', \'" + creditCardNumber + "\', TO_DATE(\'" + expiration
+                    + "\', 'MM-DD-YYYY'), \'" + street + "\', \'" + city + "\', \'" + state + "\', \'" + phone + "\', \'" + email + "\', \'"
+                    + frequentMiles + "\')";
 
             stmt.executeUpdate(sql);
             stmt.close();
             System.out.println("ID " + newCID + " was added successfully.");
 
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
             System.out.println("");
             e.printStackTrace();
         }
     }
     
-    public static void showCustomerInfo() throws SQLException
-    {
+    public static void showCustomerInfo() throws SQLException {
         String sql;
-        System.out.println
-        (
-            "In the showCustomerInfo function\n" +
-            "Function summary: Show customer info, given customer name\n\n"
-        );
+        System.out.println(
+                "In the showCustomerInfo function\n" + "Function summary: Show customer info, given customer name\n\n");
 
         System.out.println("Enter customer's first and last name.");
         System.out.print("First name: ");
@@ -370,43 +364,93 @@ public class Interface
 
         System.out.print("Last name: ");
         String lastName = input.next();
-
+        input.nextLine(); // clear the buffer.
         Statement stmt = conn.createStatement();
         try {
 
-            sql = "SELECT * FROM Customer WHERE first_name = \'" + firstName + 
-                            "\' AND last_name= \'" + lastName + "\'";
+            sql = "SELECT * FROM Customer WHERE first_name = \'" + firstName + "\' AND last_name= \'" + lastName + "\'";
             ResultSet res = stmt.executeQuery(sql);
-        
 
-            if(res.next()) {
-                System.out.println("\nINFO:\n" +
-                    res.getString(2) + ". " + res.getString(3) + " " + res.getString(4) + "\n" +
-                    "Credit card number: " + res.getString(5) + "\n" +
-                    "Expiration: " + res.getString(7) + "\n" + 
-                    "Address: " + res.getString(6) + ", " + res.getString(8) + ", " + res.getString(9) + "\n" +
-                    "Phone: " + res.getString(10) + "\n" +
-                    "Email: " + res.getString(11) + "\n" +
-                    "Frequent Miles: " + res.getString(12)
-                );
-                
+            if (res.next()) {
+                System.out.println("\nINFO:\n" + res.getString(2) + ". " + res.getString(3) + " " + res.getString(4)
+                        + "\n" + "Credit card number: " + res.getString(5) + "\n" + "Expiration: " + res.getString(6)
+                        + "\n" + "Address: " + res.getString(7) + ", " + res.getString(8) + ", " + res.getString(9)
+                        + "\n" + "Phone: " + res.getString(10) + "\n" + "Email: " + res.getString(11) + "\n"
+                        + "Frequent Miles: " + res.getString(12));
+
                 stmt.close();
                 return;
+            }
+            else
+            {
+                System.out.println("Customer with this name does not exist in the database.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
     
-    public static void findPrice()
-    {
-        System.out.print
-        (
-            "In the findPrice function\n" +
-            "Function summary: Find price for flights between two cities\n\n"
-        );
+    public static void findPrice() throws SQLException {
+        String sql, cityA, cityB;
+        int high_price1=0;
+        int high_price2=0;
+        int low_price1=0;
+        int low_price2 = 0;
+        System.out.print(
+                "In the findPrice function\n" + "Function summary: Find price for flights between two cities\n\n");
+        do {
+            System.out.println("Enter the names of two cities -- 3 letters.");
+            System.out.print("First city: ");
+            cityA = input.next();
+
+            System.out.print("Second city: ");
+            cityB = input.next();
+        } while (cityA.length() != 3 && cityB.length() != 3);
+        input.nextLine(); // clears the buffer.
+        Statement stmt = conn.createStatement();
+        try {
+            sql = "SELECT high_price, low_price FROM Price " +
+                    "WHERE departure_city = \'" + cityA + "\' AND arrival_city = \'" + cityB + "\';";
+            ResultSet res = stmt.executeQuery(sql);
+            if(res.next())
+            {
+                System.out.println("\nOne-way " + cityA + " --> " + cityB);
+                System.out.println("High price: " + res.getInt(1));
+                System.out.println("Low price: " + res.getInt(2));
+                high_price1 = res.getInt(1);
+                low_price1 = res.getInt(2);
+            }
+            else
+            {
+                System.out.println("\nPrice for " + cityA + " --> " + cityB + " doesn't exist");
+            }
+
+            sql = "SELECT high_price, low_price FROM Price " +
+                    "WHERE departure_city = \'" + cityB + "\' AND arrival_city = \'" + cityA + "\';";
+            res = stmt.executeQuery(sql);
+            if(res.next())
+            {
+                System.out.println("\nOne-way " + cityB + " --> " + cityA);
+                System.out.println("High price: " + res.getInt(1));
+                System.out.println("Low price: " + res.getInt(2));
+                high_price2 = res.getInt(1);
+                low_price2 = res.getInt(2);
+            }
+            else
+            {
+                System.out.println("\nPrice for " + cityB + " --> " + cityA + " doesn't exist");
+            }
+
+            System.out.println("\nRound Trip " + cityA + " --> " + cityB);
+                System.out.println("High price: " + (high_price1+high_price2));
+                System.out.println("Low price: " + (low_price1+low_price2));            
+            
+        } catch(SQLException e)
+        {
+            e.printStackTrace();
+        }
     }
-    
+
     public static void findAllRoutes()
     {
         System.out.print
