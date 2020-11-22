@@ -19,10 +19,10 @@ public class Interface
     
     public static void setUpConnection() throws Exception {
         Class.forName("org.postgresql.Driver");
-        String url = "jdbc:postgresql://localhost/postgres";
+        String url = "jdbc:postgresql://localhost/FinalProject";
         Properties props = new Properties();
         props.setProperty("user", "postgres");
-        props.setProperty("password", "cs1555");
+        props.setProperty("password", "postgres");
         conn = DriverManager.getConnection(url, props);
     }
     
@@ -127,6 +127,31 @@ public class Interface
             "In the eraseDatabse function\n" +
             "Function summary: Erase the database\n\n"
         );
+        
+        String sql;
+        try
+        {
+            Statement stmt = conn.createStatement();
+            sql =
+                (
+                    "DELETE FROM ourtimestamp;" +
+                    "DELETE FROM reservation_detail;" +
+                    "DELETE FROM reservation;" +
+                    "DELETE FROM customer;" +
+                    "DELETE FROM price;" +
+                    "DELETE FROM flight;" +
+                    "DELETE FROM plane;" +
+                    "DELETE FROM airline;"
+                );
+            stmt.executeUpdate(sql);
+            System.out.print("Successfully dropped all tuples from all tables in the database.\n");
+            stmt.close();
+            return;
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
     }
     
     public static void loadAirlineInformation()
