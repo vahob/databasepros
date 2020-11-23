@@ -305,8 +305,43 @@ public class Interface
         System.out.print
         (
             "In the updateCurrentTimestamp function\n" +
-            "Function summary: Update the current timestamp\n\n"
+            "Function summary: Update the current timestamp\n\n" +
+            "Please enter a new timestamp in the format [MM-DD-YYYY HH24:MI]: "
         );
+		String timestamp;
+        while(true)
+        {
+            timestamp = input.nextLine();
+            if(timestamp.length() != 16)
+            {
+                System.out.print("\nPlease enter a valid timestamp in the format [MM-DD-YYYY HH24:MI]: ");
+                continue;
+            }
+            break;
+        }
+        String sql;
+        try
+        {
+            Statement stmt = conn.createStatement();
+            sql =
+                (
+                    "DELETE FROM OURTIMESTAMP;"
+                );
+            stmt.executeUpdate(sql);
+            sql =
+                (
+                    "INSERT INTO OURTIMESTAMP VALUES (" +
+                    "\'" + timestamp + "\'" +
+                    ");"
+                );
+            stmt.executeUpdate(sql);
+            stmt.close();
+        }
+        catch(SQLException e)
+        {
+            e.printStackTrace();
+        }
+        System.out.print("\nTimestamp update complete.\n");
     }
     
     /*|===========================================================|*/
