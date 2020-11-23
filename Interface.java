@@ -280,6 +280,87 @@ public class Interface
             "In the loadPricingInformation function\n" +
             "Function summary: Load pricing information\n\n"
         );
+        char choice = '0';
+        loop:
+        while(true)
+        {
+            System.out.print
+            (
+                "Enter the character of the option you would like to select:\n" +
+                "L: Load pricing information\n" +
+                "C: Change the price of an existing flight\n" +
+                "E: Exit menu\n\n" +
+                "Enter option: "
+            );
+            try
+            {
+                choice = input.nextLine().charAt(0);
+                choice = Character.toUpperCase(choice);
+            }
+            catch(Exception e)
+            {
+                System.out.print("\nPlease enter a valid option\n");
+                continue;
+            }
+            switch(choice)
+            {
+                case 'L':
+                {
+                    System.out.print("\nPlease enter the name of the file to be loaded:");
+                    Scanner inputFile;
+                    while(true)
+                    {
+                        try
+                        {
+                            inputFile = new Scanner(new File(input.nextLine()));
+                            break;
+                        }
+                        catch(Exception e)
+                        {
+                            System.out.print("\nCould not find file. Please enter the name of a valid file to be loaded:");
+                            continue;
+                        }
+                    }
+                    while(inputFile.hasNext())
+                    {
+                        String[] tokens = inputFile.nextLine().split("\t");
+                        try
+                        {
+                            Statement stmt = conn.createStatement();
+                            String sql =
+                                (
+                                    "INSERT INTO PRICE VALUES (" +
+                                    "\'" + tokens[0] + "\', " +
+                                    "\'" + tokens[1] + "\', " +
+                                    Integer.parseInt(tokens[2]) + ", " +
+                                    Integer.parseInt(tokens[3]) + ", " +
+                                    Integer.parseInt(tokens[4]) +
+                                    ");"
+                                );
+                            stmt.executeUpdate(sql);
+                            stmt.close();
+                        }
+                        catch(SQLException e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                    inputFile.close();
+                    System.out.print("Load complete.\n");
+                    break;
+                }
+                case 'C':
+                {
+                     System.out.print("\nThis functionality is not yet implemented\n");
+                    break;
+                }
+                case 'E':
+                    break loop;
+                default:
+                    System.out.print("\nPlease enter a valid option\n");
+                    break;
+            }
+        }
     }
     
     public static void loadPlaneInformation()

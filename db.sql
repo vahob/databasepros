@@ -1,4 +1,4 @@
---hw5-db.sql
+--db.sql
 
 --Q1
 DROP TABLE IF EXISTS AIRLINE CASCADE;

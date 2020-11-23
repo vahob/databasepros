@@ -1,4 +1,4 @@
---hw5-triggers.sql
+--triggers.sql
 
 --Q5 planeUpgrade Trigger
 --Trigger Function for upgrading Plane

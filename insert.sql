@@ -1,4 +1,4 @@
---hw5-insert.sql
+--insert.sql
 
 
 --INSERT values of AIRLINE Table
