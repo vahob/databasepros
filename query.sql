@@ -1,3 +1,32 @@
+CREATE OR REPLACE FUNCTION is_connecting
+(
+    schedule1 flight.weekly_schedule%TYPE,
+    schedule2 flight.weekly_schedule%TYPE,
+    departure_time flight.departure_time%TYPE,
+    arrival_time flight.arrival_time%TYPE
+)
+RETURNS BOOLEAN
+AS $$
+    DECLARE
+        avail BOOLEAN;
+    BEGIN
+        avail := FALSE;
+        IF departure_time::INTEGER > (arrival_time::INTEGER + 100)
+        THEN 
+            FOR i IN 1.. 7 BY 1
+            LOOP
+            EXIT WHEN i = 7 AND avail = TRUE;
+            IF SUBSTRING(schedule1,i,1) != '-' AND 
+                SUBSTRING(schedule1,i,1) = SUBSTRING(schedule2,i,1)
+            THEN avail := TRUE;
+            END IF;
+            END LOOP;
+        END IF;
+        
+        RETURN avail;
+    END
+$$ LANGUAGE plpgsql;
+
 --Q2 getCancellationTime Function
 CREATE OR REPLACE FUNCTION getCancellationTime(reservation_num integer)
     RETURNS timestamp AS
