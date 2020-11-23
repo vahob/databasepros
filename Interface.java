@@ -701,23 +701,156 @@ public class Interface
         }
     }
 
-    public static void findAllRoutes()
+    public static void findAllRoutes() throws SQLException
     {
+        String sql, cityA, cityB;
         System.out.print
         (
             "In the findAllRoutes function\n" +
             "Function summary: Find all routes between two cities\n\n"
         );
+
+        do {
+            System.out.println("Enter the names of two cities -- 3 letters.");
+            System.out.print("Departure city: ");
+            cityA = input.next();
+
+            System.out.print("Arrival city: ");
+            cityB = input.next();
+        } while (cityA.length() != 3 && cityB.length() != 3);
+        input.nextLine(); // clears the buffer.
+        Statement stmt = conn.createStatement();
+        try {
+
+            sql = "SELECT flight_number, departure_city, departure_time, arrival_time FROM Flight " +
+                    "WHERE departure_city = \'" + cityA + "\' AND arrival_city = \'" + cityB + "\';";
+            ResultSet res = stmt.executeQuery(sql);
+            System.out.println("Direct routes between " + cityA + " and " + cityB);
+            if(!res.next())
+            {
+                System.out.println("No direct routes were found.");
+            } else {
+                do {
+                    System.out.println("Flight Number: " + res.getInt(1) + "\n" + 
+                                       "Departure city: " + res.getString(2) + "\n" +
+                                       "Departure time: " + res.getString(3) + "\n" +
+                                       "Arrival time: " + res.getString(4));
+                } while(res.next());
+            }   
+                       
+
+            sql = "SELECT F1.flight_number, F1.departure_city, F1.departure_time, F1.arrival_time, " + 
+            " F2.flight_number, F2.departure_city, F2.departure_time, F2.arrival_time " +            
+            " FROM Flight F1 JOIN Flight F2 ON F1.arrival_city = F2.departure_city " +
+            "WHERE F1.departure_city = \'" + cityA + "\' and F2.arrival_city = \'" + cityB + "\' " +
+            "AND  is_connecting(F1.weekly_schedule, F2.weekly_schedule, F2.departure_time, F1.arrival_time);";
+            res = stmt.executeQuery(sql);
+            System.out.println("Routes with one connection between " + cityA + " and " + cityB);
+            if(!res.next())
+            {
+                System.out.println("No direct routes were found.");
+            } else {
+                do {
+                    System.out.println("++++ Route " + res.getRow()+ "++++++++++");
+                    System.out.println("Flight Number: " + res.getInt(1) + "\n" + 
+                                   "Departure city: " + res.getString(2) + "\n" +
+                                   "Departure time: " + res.getString(3) + "\n" +
+                                   "Arrival time: " + res.getString(4));
+                    System.out.println("Connection");
+                    System.out.println("Flight Number: " + res.getInt(5) + "\n" + 
+                                   "Departure city: " + res.getString(6) + "\n" +
+                                   "Departure time: " + res.getString(7) + "\n" +
+                                   "Arrival time: " + res.getString(8));
+                    System.out.println("++++++++++++++++++++");
+                } while(res.next());
+            } 
+        } catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+
+
+
+
     }
     
-    public static void findAllRoutesForGivenAirline()
+    public static void findAllRoutesForGivenAirline() throws SQLException
     {
+        String sql, cityA, cityB, airline;
         System.out.print
         (
-            "In the findAllRoutesForGivenAirline function\n" +
-            "Function summary: Find all routes between two cities of a given airline\n\n"
+            "In the findAllRoutes function\n" +
+            "Function summary: Find all routes between two cities given airline\n\n"
         );
+
+        do {
+            
+            System.out.println("Enter the names of two cities -- 3 letters.");
+            System.out.print("Departure city: ");
+            cityA = input.next();
+            System.out.print("Arrival city: ");
+            cityB = input.next();
+            System.out.print("Airline name: ");
+            input.nextLine(); // clear the buffer
+            airline = input.nextLine();
+        } while (cityA.length() != 3 && cityB.length() != 3);
+        //input.nextLine(); // clears the buffer.
+        Statement stmt = conn.createStatement();
+        try {
+
+            sql = "SELECT flight_number, departure_city, departure_time, arrival_time FROM Flight " +
+                    "WHERE departure_city = \'" + cityA + "\' AND arrival_city = \'" + cityB + 
+                    "\' AND airline_id = (SELECT airline_id FROM airline " +
+                    "WHERE airline_name = \'" + airline + "\' );";
+            ResultSet res = stmt.executeQuery(sql);
+            System.out.println("Direct routes between " + cityA + " and " + cityB);
+            
+            if(!res.next())
+            {
+                System.out.println("No direct routes were found.");
+            } else {
+                do {
+                    System.out.println("Flight Number: " + res.getInt(1) + "\n" + 
+                                       "Departure city: " + res.getString(2) + "\n" +
+                                       "Departure time: " + res.getString(3) + "\n" +
+                                       "Arrival time: " + res.getString(4));
+                } while(res.next());
+            }   
+                       
+
+            sql = "SELECT F1.flight_number, F1.departure_city, F1.departure_time, F1.arrival_time, " + 
+            " F2.flight_number, F2.departure_city, F2.departure_time, F2.arrival_time " +            
+            " FROM Flight F1 JOIN Flight F2 ON F1.arrival_city = F2.departure_city " +
+            "WHERE F1.departure_city = \'" + cityA + "\' and F2.arrival_city = \'" + cityB + "\' " +
+            "AND  is_connecting(F1.weekly_schedule, F2.weekly_schedule, F2.departure_time, F1.arrival_time) "
+            + "AND F1.airline_id = (SELECT airline_id FROM airline " +
+            "WHERE airline_name = \'" + airline + "\' ) AND F1.airline_id = F2.airline_id;";
+            res = stmt.executeQuery(sql);
+            System.out.println("Routes with one connection between " + cityA + " and " + cityB);
+            if(!res.next())
+            {
+                System.out.println("No direct routes were found.");
+            } else {
+                do {
+                    System.out.println("++++ Route " + res.getRow()+ "++++++++++");                    
+                    System.out.println("Flight Number: " + res.getInt(1) + "\n" + 
+                                   "Departure city: " + res.getString(2) + "\n" +
+                                   "Departure time: " + res.getString(3) + "\n" +
+                                   "Arrival time: " + res.getString(4));
+                    System.out.println("Connection");
+                    System.out.println("Flight Number: " + res.getInt(5) + "\n" + 
+                                   "Departure city: " + res.getString(6) + "\n" +
+                                   "Departure time: " + res.getString(7) + "\n" +
+                                   "Arrival time: " + res.getString(8));
+                    System.out.println("++++++++++++++++++++");
+                } while(res.next());
+            } 
+        } catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
     }
+    
     
     public static void findAllUnfilledFlightsOnGivenDate()
     {
