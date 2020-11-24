@@ -382,7 +382,7 @@ public class Interface
             }
             catch(Exception e)
             {
-                System.out.print("\nCould not find file. Please enter the name of a valid file to be loaded:");
+                System.out.print("\nCould not find file. Please enter the name of a valid file to be loaded: ");
                 continue;
             }
         }
@@ -398,7 +398,7 @@ public class Interface
                         "\'" + tokens[0] + "\', " +
                         "\'" + tokens[1] + "\', " +
                         Integer.parseInt(tokens[2]) + ", " +
-                        "\'" + tokens[3] + "\', " +
+                        "TO_DATE(\'" + tokens[3] + "\', 'MM-DD-YYYY'), " +
                         Integer.parseInt(tokens[4]) + ", " +
 						Integer.parseInt(tokens[5]) +
                         ");"
