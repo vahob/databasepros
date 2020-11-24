@@ -395,7 +395,6 @@ public class Interface
                 String sql =
                     (
                         "INSERT INTO PLANE VALUES (" +
-                        
                         "\'" + tokens[0] + "\', " +
                         "\'" + tokens[1] + "\', " +
                         Integer.parseInt(tokens[2]) + ", " +
@@ -423,6 +422,47 @@ public class Interface
             "In the generatePassengerManifest function\n" +
             "Function summary: Generate passenger manifest for specific flight on given day\n\n"
         );
+        
+        System.out.print("Please enter the flight number and date in the format MM-DD-YYYY of the manifest you would like to see.\n\n");
+        System.out.print("Flight number: ");
+        String flight_number = input.nextLine();
+        System.out.print("Date: ");
+        String date = input.nextLine();
+        
+        try
+        {
+            Statement stmt = conn.createStatement();
+            String sql =
+                (
+                    "SELECT salutation, first_name, last_name " +
+                    "FROM CUSTOMER " +
+                    "JOIN RESERVATION ON CUSTOMER.cid = RESERVATION.cid " +
+                    "JOIN RESERVATION_DETAIL on RESERVATION.reservation_number = RESERVATION_DETAIL.reservation_number " +
+                    "WHERE flight_number = \'" + flight_number + "\' AND TO_CHAR(flight_date, 'MM-DD-YYYY') = " + "\'" + date +"\';"
+                );
+            ResultSet res = stmt.executeQuery(sql);
+            int i = 0;
+            while(res.next() == true)
+            {
+                i++;
+                System.out.print
+                (
+                    "\nPassenger " + i + ":\n" +
+                    "Salutation: " + res.getString(1) + "\n" +
+                    "First Name: " + res.getString(2) + "\n" +
+                    "Last Name: " + res.getString(3) + "\n"
+                );
+            }
+            stmt.close();
+            if(i == 0)
+            {
+                System.out.print("\nEither such a flight does not exist, or it exists but there are no passengers on it\n");
+            }
+        }
+        catch(SQLException e)
+        {
+            e.printStackTrace();
+        }
     }
     
     public static void updateCurrentTimestamp()
