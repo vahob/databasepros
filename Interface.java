@@ -1301,13 +1301,69 @@ public class Interface
         }
     }
     
-    public static void findTopTravelledCustomers()
+    public static void findTopTravelledCustomers() throws SQLException
     {
         System.out.print
         (
             "In the findTopTravelledCustomers function\n" +
             "Function summary: Find the top-k traveled customers for each airline\n\n"
         );
+
+        String sql;
+        System.out.print("Enter top-k number: ");
+        String top = input.next();
+        input.nextLine();
+        int top_k = Integer.parseInt(top);
+
+        Statement stmt = conn.createStatement();
+        try {
+            sql = 
+                "SELECT first_name, last_name, airline_name " +
+                "FROM (SELECT S, CID, flight_number, D.airline_id AS airline_id, A.airline_name AS airline_name " +
+                "FROM (SELECT S, CID, T.flight_number AS flight_number, F.airline_id AS airline_id " +
+                "FROM (SELECT count(leg) AS S, cid, flight_number " +
+                "FROM (SELECT cid, flight_number, leg " +
+                "FROM reservation_detail NATURAL JOIN reservation) R " +
+                "GROUP BY cid, flight_number " + 
+                "ORDER BY flight_number ASC, S DESC) T LEFT JOIN flight F ON T.flight_number = F.flight_number " +
+                "ORDER BY airline_id ASC, S DESC) AS D LEFT JOIN airline A " +
+                "ON D.airline_id = A.airline_id) AS G LEFT JOIN customer C " +
+                "ON G.cid = C.cid GROUP BY C.first_name, C.last_name, G.airline_name " +
+                "ORDER BY airline_name";            
+
+                ResultSet res = stmt.executeQuery(sql);                
+
+                res = stmt.executeQuery(sql);
+                String prev="";
+
+                if (!res.next()) {
+                    System.out.println("Airline or Customer table must be empty.");
+                } else {
+                    System.out.println("Top-k traveled customer for each airline.");
+
+                    int counter=0;
+                    
+                    do {
+
+                        if(counter > 0) {
+                            if(!prev.equals(res.getString(3)))
+                                counter = 0;                        
+                        }
+
+                        if(counter == 0)
+                            System.out.println(res.getString(3));
+                        if(counter < top_k)
+                            System.out.println("  " + res.getString(1) + " " + res.getString(2));
+                        counter++;
+                        prev = res.getString(3);
+
+                    } while (res.next());
+                }
+
+        } catch (SQLException e)
+        {
+            e.printStackTrace();
+        }        
     }
     
     public static void rankAirlines()
