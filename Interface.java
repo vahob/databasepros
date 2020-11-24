@@ -1164,13 +1164,24 @@ public class Interface
         }
     }
     
-    public static void deleteReservation()
-    {
-        System.out.print
-        (
-            "In the deleteReservation function\n" +
-            "Function summary: Delete reservation\n\n"
-        );
+    public static void deleteReservation() throws SQLException {
+        System.out.print("In the deleteReservation function\n" + "Function summary: Delete reservation\n\n");
+        String sql;
+        System.out.print("Enter reservation number: ");
+        String reservation_number = input.next();
+        input.nextLine();
+        int res_number = Integer.parseInt(reservation_number);
+
+        Statement stmt = conn.createStatement();
+        try {
+            sql = "DELETE FROM reservation WHERE reservation_number = "+ res_number + ";";
+            int res = stmt.executeUpdate(sql);
+            if(res==0) {System.out.println("Reservation number does not exist.");}
+            else {System.out.println("Reservation succesfully deleted.");}
+        } catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
     }
     
     public static void showReservationInfo()
