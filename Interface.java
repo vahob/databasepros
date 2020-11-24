@@ -369,8 +369,51 @@ public class Interface
         System.out.print
         (
             "In the loadPlaneInformation function\n" +
-            "Function summary: Load plane information\n\n"
+            "Function summary: Load plane information\n\n" +
+            "Please enter the name of the file to be loaded:"
         );
+		Scanner inputFile;
+        while(true)
+        {
+            try
+            {
+                inputFile = new Scanner(new File(input.nextLine()));
+                break;
+            }
+            catch(Exception e)
+            {
+                System.out.print("\nCould not find file. Please enter the name of a valid file to be loaded:");
+                continue;
+            }
+        }
+        while(inputFile.hasNext())
+        {
+            String[] tokens = inputFile.nextLine().split("\t");
+            try
+            {
+                Statement stmt = conn.createStatement();
+                String sql =
+                    (
+                        "INSERT INTO PLANE VALUES (" +
+                        
+                        "\'" + tokens[0] + "\', " +
+                        "\'" + tokens[1] + "\', " +
+                        Integer.parseInt(tokens[2]) + ", " +
+                        "\'" + tokens[3] + "\', " +
+                        Integer.parseInt(tokens[4]) + ", " +
+						Integer.parseInt(tokens[5]) +
+                        ");"
+                    );
+                stmt.executeUpdate(sql);
+                stmt.close();
+            }
+            catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        inputFile.close();
+        System.out.print("Load complete.\n");
     }
     
     public static void generatePassengerManifest()
