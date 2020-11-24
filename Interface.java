@@ -658,7 +658,7 @@ public class Interface
         System.out.print("State: ");
         String state = input.nextLine();
 
-        System.out.print("Phone number: ");
+        System.out.print("Phone number (no spaces): ");
         String phone = input.nextLine();
 
         System.out.print("Email address: ");
@@ -670,7 +670,7 @@ public class Interface
         System.out.print("Expiration date: ");
         String expiration = input.nextLine();
 
-        System.out.print("Frequent miles: ");
+        System.out.print("Airline abbreviation for frequent miles: ");
         String frequentMiles = input.next();
         input.nextLine(); // clears the buffer.
         Statement stmt = conn.createStatement();
