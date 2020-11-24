@@ -351,8 +351,33 @@ public class Interface
                 }
                 case 'C':
                 {
+                    System.out.print("Please enter the departure city, arrival city, high price, and low price.\n\n");
+                    System.out.print("Departure city: ");
+                    String departure_city = input.nextLine();
+                    System.out.print("Arrival city: ");
+                    String arrival_city = input.nextLine();
+                    System.out.print("High price: ");
+                    int high_price = Integer.parseInt(input.nextLine());
+                    System.out.print("Low price: ");
+                    int low_price = Integer.parseInt(input.nextLine());
                     
-                    System.out.print("\nThis functionality is not yet implemented\n");
+                    try
+                    {
+                        Statement stmt = conn.createStatement();
+                        String sql =
+                            (
+                                "UPDATE PRICE "  +
+                                "SET high_price = " + high_price +", low_price = " + low_price + " " +
+                                "WHERE departure_city = \'" + departure_city + "\' AND arrival_city = \'" + arrival_city + "\';"
+                            );
+                        stmt.executeUpdate(sql);
+                        stmt.close();
+                        System.out.print("\nUpdated price.\n");
+                    }
+                    catch(SQLException e)
+                    {
+                        e.printStackTrace();
+                    }
                     break;
                 }
                 case 'E':
@@ -1038,8 +1063,9 @@ public class Interface
         System.out.print("Last name: ");
         String lastName = input.next();
 
-        Statement stmt = conn.createStatement();
+        Statement stmt;
         try {
+            stmt = conn.createStatement();
             sql = "SELECT CID, credit_card_num, frequent_miles FROM Customer WHERE first_name = \'" + firstName + "\' AND last_name= \'" + lastName + "\'";
             ResultSet res = stmt.executeQuery(sql);
 
@@ -1123,10 +1149,9 @@ public class Interface
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        stmt = conn.createStatement();
+        
         try {
-
+                stmt = conn.createStatement();
                 sql = "SELECT COUNT(reservation_number) FROM reservation;";
                 ResultSet res =  stmt.executeQuery(sql);
                 if(res.next()) {
