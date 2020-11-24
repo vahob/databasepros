@@ -1014,11 +1014,154 @@ public class Interface
     
     public static void addReservation()
     {
-        System.out.print
-        (
-            "In the addReservation function\n" +
-            "Function summary: Add reservation\n\n"
-        );
+        System.out.print("In the addReservation function\n" + "Function summary: Add reservation\n\n");
+
+        ArrayList<Integer> flight_num = new ArrayList<>();
+        ArrayList<String> dates = new ArrayList<>();
+        Integer flight_n=0;
+        String date="";
+        String credit_card="";
+        String freq_miles="";
+        String sql="";
+        String timestamp="";
+        int reservation_num=0;
+        int CID=0;
+        int cost=0;
+        int high_price=0;
+        int low_price=0;
+        int airline_id1=0;
+        int airline_id2=0;
+        cost = 0;
+        System.out.print("First name: ");
+        String firstName = input.next();
+
+        System.out.print("Last name: ");
+        String lastName = input.next();
+
+        Statement stmt = conn.createStatement();
+        try {
+            sql = "SELECT CID, credit_card_num, frequent_miles FROM Customer WHERE first_name = \'" + firstName + "\' AND last_name= \'" + lastName + "\'";
+            ResultSet res = stmt.executeQuery(sql);
+
+            if (res.next()) {
+                CID = res.getInt(1);
+                credit_card = res.getString(2);
+                freq_miles = res.getString(3);
+            }
+            else
+            {
+                System.out.println("User: " + firstName + " " + lastName + " does not exit in Customers");
+                return;
+            }
+        
+
+            for (int i = 0; i < 4; i++) {
+
+                System.out.print("Enter flight number: ");
+                String f = input.next();
+                flight_n = Integer.parseInt(f);
+                if(i==0 && flight_n == 0)
+                {
+                    System.out.println("First flight number cannot be zero.");
+                    i=0;
+                    continue;
+                }
+                else if (flight_n==0)
+                {
+                    break;
+                }          
+
+                System.out.print("Enter date: ");
+                date = input.next();
+                flight_num.add(flight_n);
+                dates.add(date);
+
+                sql = "SELECT P.high_price, P.low_price, F.airline_id " +
+                "FROM (FLIGHT F JOIN PRICE P ON F.departure_city=P.departure_city " + 
+                "AND F.arrival_city=P.arrival_city) WHERE F.flight_number = " + flight_n + ";";
+
+                res = stmt.executeQuery(sql);
+                if(res.next())
+                {
+                    high_price = res.getInt(1);
+                    low_price = res.getInt(2);
+                    airline_id1 = res.getInt(3);                    
+                }
+
+                sql = "SELECT airline_id " +
+                "FROM airline WHERE airline_abbreviation = (SELECT frequent_miles " +
+                "FROM customer C  WHERE C.cid = " + CID + ");";
+
+                res = stmt.executeQuery(sql);
+                if(res.next()) {
+                    airline_id2 = res.getInt(1);
+                }
+
+                if(i > 0)
+                {
+                    
+                    if(dates.get(i-1) == date) {
+                        if(airline_id1 == airline_id2)
+                            high_price *= 0.9;
+                        cost += high_price;
+                    }
+                    else
+                    {
+                        if(airline_id1 == airline_id2)
+                            low_price *= 0.9;
+                        cost += low_price;  
+                    }
+                }
+                else {
+                    if(airline_id1 == airline_id2)
+                            high_price *= 0.9;
+                        cost += high_price;
+                }               
+                
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        stmt = conn.createStatement();
+        try {
+
+                sql = "SELECT COUNT(reservation_number) FROM reservation;";
+                ResultSet res =  stmt.executeQuery(sql);
+                if(res.next()) {
+                    reservation_num = res.getInt(1);
+                    reservation_num++; // increment to generate new reservation number
+                }
+                else {
+                    System.out.println("Query is not successful");
+                    return;
+                }
+
+                sql = "SELECT c_timestamp from ourtimestamp LIMIT 1;";
+                res = stmt.executeQuery(sql);
+                if(res.next()) timestamp = res.getString(1);
+
+                sql = "INSERT INTO Reservation VALUES("
+                + reservation_num + ", " + CID + ", " + cost + ", \'" 
+                + credit_card + "\', \'" + timestamp + "\', FALSE);";
+                stmt.executeUpdate(sql);
+                for(int i=0; i < flight_num.size(); i++)
+                {
+                    sql = "CALL makereservation(" 
+                    + reservation_num + ", " + flight_num.get(i) + ", \'" + 
+                    dates.get(i) + "\', " + (i+1) + ")";
+                    stmt.execute(sql);
+                }
+
+                System.out.println("Reservation is confirmed.\n" +
+                                   "Reservation number is " + reservation_num);
+
+        } catch (SQLException e)
+        {
+            System.out.println("Error: Reservation cannot be created.");
+            e.printStackTrace();
+        }
     }
     
     public static void deleteReservation()
