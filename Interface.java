@@ -1214,13 +1214,26 @@ public class Interface
         }        
     }
     
-    public static void buyTicketFromReservation()
-    {
-        System.out.print
-        (
-            "In the buyTicketFromReservation function\n" +
-            "Function summary: Buy ticket from existing reservation\n\n"
-        );
+    public static void buyTicketFromReservation() throws SQLException {
+        System.out.print("In the buyTicketFromReservation function\n"
+                + "Function summary: Buy ticket from existing reservation\n\n");
+
+        String sql;
+        System.out.print("Enter reservation number: ");
+        String reservation_number = input.next();
+        input.nextLine();
+        int res_number = Integer.parseInt(reservation_number);
+
+        Statement stmt = conn.createStatement();
+        try {
+            sql = "UPDATE reservation SET ticketed=TRUE WHERE reservation_number = "+ res_number + ";";
+            int res = stmt.executeUpdate(sql);
+            if(res==0) {System.out.println("Reservation number does not exist.");}
+            else {System.out.println("Reservation is succesfully purchased.");}
+        } catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
     }
     
     public static void findTopPayingCustomers()
