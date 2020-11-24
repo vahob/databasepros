@@ -1391,13 +1391,46 @@ public class Interface
         }        
     }
     
-    public static void rankAirlines()
+    public static void rankAirlines() throws SQLException
     {
         System.out.print
         (
             "In the rankAirlines function\n" +
             "Function summary: Rank the airlines based on customer satisfaction\n\n"
         );
+        String sql;
+        Statement stmt = conn.createStatement();
+        try {
+            sql = 
+                "SELECT SUM(S) AS W, airline_name " +
+                "FROM (SELECT S, CID, flight_number, D.airline_id AS airline_id, A.airline_name AS airline_name " +
+                "FROM (SELECT S, CID, T.flight_number AS flight_number, F.airline_id AS airline_id " +
+                "FROM (SELECT count(leg) AS S, cid, flight_number " +
+                "FROM (SELECT cid, flight_number, leg " +
+                "FROM reservation_detail NATURAL JOIN reservation) R " +
+                "GROUP BY cid, flight_number " + 
+                "ORDER BY flight_number ASC, S DESC) T LEFT JOIN flight F ON T.flight_number = F.flight_number " +
+                "ORDER BY airline_id ASC, S DESC) AS D LEFT JOIN airline A " +
+                "ON D.airline_id = A.airline_id) AS G LEFT JOIN customer C " +
+                "ON G.cid = C.cid GROUP BY G.airline_name " +
+                "ORDER BY W DESC; ";            
+
+                ResultSet res = stmt.executeQuery(sql);                
+
+                res = stmt.executeQuery(sql);
+                if (!res.next()) {
+                    System.out.println("Airline or Customer table must be empty.");
+                } else {
+                    System.out.println("Ranking based on the customer satisfaction");                    
+                    do {
+                        System.out.println("  " + res.getString(2));
+                    } while (res.next());
+                }
+
+        } catch (SQLException e)
+        {
+            e.printStackTrace();
+        }        
     }
 
     /*|===========================================================|*/
