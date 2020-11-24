@@ -664,7 +664,7 @@ public class Interface
         System.out.print("Email address: ");
         String email = input.nextLine();
 
-        System.out.print("Credit card number: ");
+        System.out.print("Credit card number (no spaces): ");
         String creditCardNumber = input.nextLine();
 
         System.out.print("Expiration date: ");
@@ -1076,7 +1076,7 @@ public class Interface
             }
             else
             {
-                System.out.println("User: " + firstName + " " + lastName + " does not exit in Customers");
+                System.out.println("User: " + firstName + " " + lastName + " does not exist in Customers");
                 return;
             }
         
