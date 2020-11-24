@@ -1184,13 +1184,34 @@ public class Interface
         }
     }
     
-    public static void showReservationInfo()
-    {
-        System.out.print
-        (
-            "In the showReservationInfo function\n" +
-            "Function summary: Show reservation info, given reservation number\n\n"
-        );
+    public static void showReservationInfo() throws SQLException {
+        System.out.print("In the showReservationInfo function\n"
+                + "Function summary: Show reservation info, given reservation number\n\n");
+
+        String sql;
+        System.out.print("Enter reservation number: ");
+        String reservation_number = input.next();
+        input.nextLine();
+        int res_number = Integer.parseInt(reservation_number);
+
+        Statement stmt = conn.createStatement();
+        try {
+            sql = "SELECT flight_number FROM reservation_detail WHERE reservation_number = "+ res_number + ";";
+            ResultSet res = stmt.executeQuery(sql);
+
+            if (!res.next()) {
+                System.out.println("Reservation number does not exist.");
+            } else {
+                System.out.println("All flights for the given reservation:");
+                do {
+                    System.out.println("  Flight Number: " + res.getInt(1));
+                } while (res.next());
+            }
+            
+        } catch (SQLException e)
+        {
+            e.printStackTrace();
+        }        
     }
     
     public static void buyTicketFromReservation()
