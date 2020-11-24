@@ -48,6 +48,26 @@ $$ LANGUAGE plpgsql;
 SELECT getCancellationTime(1);
 
 
+CREATE OR REPLACE FUNCTION getFlightTime(flight_num integer, flight_date timestamp)
+    RETURNS TIMESTAMP AS
+$$
+DECLARE
+    departure_time flight.departure_time%TYPE;
+    timestamp_string VARCHAR(20);
+    full_timestamp TIMESTAMP;
+BEGIN
+    SELECT Flight.departure_time INTO departure_time
+    FROM flight
+    WHERE flight_number = flight_num;
+    
+    timestamp_string = CONCAT(TO_CHAR(flight_date,'MM-DD-YYYY'), ' ', concat(SUBSTRING(departure_time,1,2), ':', SUBSTRING(departure_time,3)));
+    full_timestamp = to_TimeStamp(timestamp_string, 'MM-DD-YYYY HH24:MI:SS');
+
+    RETURN full_timestamp;
+END;
+$$ language plpgsql;
+
+
 --Q3 isPlaneFull Function
 
 -- Q3 Helper function
@@ -93,7 +113,7 @@ BEGIN
     current_capacity = getNumberOfSeats(flight_num, flight_d);
 
     IF current_capacity IS NULL THEN
-        RAISE 'No matching flight.';
+        result := FALSE;
     ELSEIF current_capacity < max_capacity THEN
         result := FALSE;
     END IF;

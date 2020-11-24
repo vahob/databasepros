@@ -852,13 +852,81 @@ public class Interface
     }
     
     
-    public static void findAllUnfilledFlightsOnGivenDate()
+    public static void findAllUnfilledFlightsOnGivenDate() throws SQLException
     {
+        String sql, cityA, cityB, date;
         System.out.print
         (
             "In the findAllUnfilledFlightsOnGivenDate function\n" +
             "Function summary: Find all routes with available seats between two cities on a given date\n\n"
         );
+
+        do {
+            
+            System.out.println("Enter the names of two cities -- 3 letters.");
+            System.out.print("Departure city: ");
+            cityA = input.next();
+            System.out.print("Arrival city: ");
+            cityB = input.next();
+            System.out.print("Date MM-DD-YYYY: ");
+            input.nextLine(); // clear the buffer
+            date = input.nextLine();
+        } while (cityA.length() != 3 && cityB.length() != 3);
+        //input.nextLine(); // clears the buffer.
+        Statement stmt = conn.createStatement();
+
+        try {
+
+            sql = "SELECT flight_number, departure_city, departure_time, arrival_time FROM Flight " +
+                    "WHERE departure_city = \'" + cityA + "\' AND arrival_city = \'" + cityB + 
+                    "\' AND isplanefull(flight_number, getflighttime(flight_number, TO_DATE(\'" + date + "\', 'MM-DD-YYYY'))) = FALSE;";
+            ResultSet res = stmt.executeQuery(sql);
+            System.out.println("Direct routes between " + cityA + " and " + cityB);
+            
+            if(!res.next())
+            {
+                System.out.println("No direct routes were found.");
+            } else {
+                do {
+                    System.out.println("Flight Number: " + res.getInt(1) + "\n" + 
+                                       "Departure city: " + res.getString(2) + "\n" +
+                                       "Departure time: " + res.getString(3) + "\n" +
+                                       "Arrival time: " + res.getString(4));
+                } while(res.next());
+            }   
+                       
+
+            sql = "SELECT F1.flight_number, F1.departure_city, F1.departure_time, F1.arrival_time, " + 
+            " F2.flight_number, F2.departure_city, F2.departure_time, F2.arrival_time " +            
+            " FROM Flight F1 JOIN Flight F2 ON F1.arrival_city = F2.departure_city " +
+            "WHERE F1.departure_city = \'" + cityA + "\' and F2.arrival_city = \'" + cityB + "\' " +
+            "AND  is_connecting(F1.weekly_schedule, F2.weekly_schedule, F2.departure_time, F1.arrival_time) "
+            + "AND isplanefull(F1.flight_number, getflighttime(F1.flight_number, TO_DATE(\'" + date + "\', 'MM-DD-YYYY'))) = FALSE "
+            + "AND isplanefull(F2.flight_number, getflighttime(F2.flight_number, TO_DATE(\'" + date + "\', 'MM-DD-YYYY'))) = FALSE";
+            res = stmt.executeQuery(sql);
+            System.out.println("Routes with one connection between " + cityA + " and " + cityB);
+            if(!res.next())
+            {
+                System.out.println("No direct routes were found.");
+            } else {
+                do {
+                    System.out.println("++++ Route " + res.getRow()+ "++++++++++");                    
+                    System.out.println("Flight Number: " + res.getInt(1) + "\n" + 
+                                   "Departure city: " + res.getString(2) + "\n" +
+                                   "Departure time: " + res.getString(3) + "\n" +
+                                   "Arrival time: " + res.getString(4));
+                    System.out.println("Connection");
+                    System.out.println("Flight Number: " + res.getInt(5) + "\n" + 
+                                   "Departure city: " + res.getString(6) + "\n" +
+                                   "Departure time: " + res.getString(7) + "\n" +
+                                   "Arrival time: " + res.getString(8));
+                    System.out.println("++++++++++++++++++++");
+                } while(res.next());
+            } 
+        } catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
     }
     
     public static void addReservation()
