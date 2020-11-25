@@ -229,10 +229,24 @@ SELECT getNumberOfSeats(3, TO_TIMESTAMP('11-05-2020 14:15', 'MM-DD-YYYY HH24:MI'
 CREATE OR REPLACE FUNCTION downgradePlane()
     RETURNS TRIGGER AS
 $$
+DECLARE
+    arow RECORD;
+    cur CURSOR FOR 
+        SELECT flight_number, flight_date
+        FROM  Reservation NATURAL JOIN reservation_detail
+        WHERE reservation_number = NEW.reservation_number;
 BEGIN
-    raise notice '% is attempting downgrading', new.flight_number;
+    raise notice '% is attempting downgrading', new.reservation_number;
     -- downgrade plane in case it is upgradable
-    CALL downgradePlaneHelper(new.flight_number, new.flight_date);
+    OPEN cur;
+
+    LOOP
+        FETCH cur INTO arow;
+        --exit when done
+        EXIT WHEN NOT FOUND;
+        CALL downgradePlaneHelper(arow.flight_number, arow.flight_date);
+    END LOOP;
+    CLOSE cur;
     RETURN NEW;
 END;
 $$ language plpgsql;
