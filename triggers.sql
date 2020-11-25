@@ -96,6 +96,24 @@ VALUES (2, 3, TO_TIMESTAMP('11-05-2020 14:15', 'MM-DD-YYYY HH24:MI'), 3);
 SELECT getNumberOfSeats(3, TO_TIMESTAMP('11-05-2020 14:15', 'MM-DD-YYYY HH24:MI')::timestamp without time zone);
 -- should return 3
 
+CREATE OR REPLACE FUNCTION downgradePlane()
+    RETURNS TRIGGER AS
+$$
+BEGIN
+    raise notice '% is attempting downgrading', new.flight_number;
+    -- downgrade plane in case it is upgradable
+    CALL downgradePlaneHelper(new.flight_number, new.flight_date);
+    RETURN NEW;
+END;
+$$ language plpgsql;
+
+DROP TRIGGER IF EXISTS planeDowngrade ON RESERVATION_DETAIL;
+CREATE TRIGGER planeDowngrade
+    BEFORE DELETE
+    ON RESERVATION_DETAIL
+    FOR EACH ROW
+EXECUTE PROCEDURE downgradePlane();
+
 --Q6 cancelReservation Trigger
 CREATE OR REPLACE PROCEDURE downgradePlaneHelper(flight_num integer, flight_time timestamp)
 AS
