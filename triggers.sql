@@ -2,6 +2,25 @@
 
 --Q5 planeUpgrade Trigger
 --Trigger Function for upgrading Plane
+
+
+
+CREATE OR REPLACE VIEW CustomersWithLegPerAirline
+AS
+SELECT DISTINCT ON (G.cid) G.cid, SUM(S) AS W, airline_abbreviation
+FROM (SELECT S, CID, flight_number, D.airline_id AS airline_id, A.airline_abbreviation AS airline_abbreviation
+FROM (SELECT S, CID, T.flight_number AS flight_number, F.airline_id AS airline_id
+FROM (SELECT count(leg) AS S, cid, flight_number
+FROM (SELECT cid, flight_number, leg
+FROM reservation_detail NATURAL JOIN reservation) R
+GROUP BY cid, flight_number 
+ORDER BY flight_number ASC, S DESC) T LEFT JOIN flight F ON T.flight_number = F.flight_number
+ORDER BY airline_id ASC, S DESC) AS D LEFT JOIN airline A
+ON D.airline_id = A.airline_id) AS G LEFT JOIN customer C
+ON G.cid = C.cid
+GROUP BY G.CID, G.airline_abbreviation
+ORDER BY G.CID, W DESC;
+
 DROP TRIGGER IF EXISTS frequetFlyer ON reservation;
 CREATE TRIGGER frequentFlyer
 BEFORE UPDATE OF ticketed
