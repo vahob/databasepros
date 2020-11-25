@@ -3,14 +3,29 @@
 --Q5 planeUpgrade Trigger
 --Trigger Function for upgrading Plane
 
+
+CREATE OR REPLACE FUNCTION adjustCost()
+    RETURNS TRIGGER AS
+$$
+BEGIN		
+		UPDATE RESERVATION
+		SET Cost = Cost - OLD.high_price + NEW.high_price - OLD.low_price + NEW.low_price
+		WHERE reservation_number IN 
+		(
+			SELECT Reservation_Number
+			FROM reservation_detail RD LEFT JOIN flight F
+            ON RD.flight_number = F.flight_number
+		) AND ticketed = 'N';
+        RETURN NEW;
+END;
+$$ language plpgsql;
+
 DROP TRIGGER IF EXISTS adjustTicket ON price;
 CREATE TRIGGER adjustTicket
 BEFORE UPDATE OF high_price, low_price
 ON price
 FOR EACH ROW
 EXECUTE PROCEDURE adjustCost();
-
-
 
 CREATE OR REPLACE PROCEDURE upgradePlaneHelper(flight_num integer, flight_time timestamp) AS
 $$
