@@ -93,15 +93,30 @@ EXECUTE PROCEDURE updateFrequentMiles();
 CREATE OR REPLACE FUNCTION adjustCost()
     RETURNS TRIGGER AS
 $$
-BEGIN		
+BEGIN	
+        IF NEW.high_price != OLD.high_price THEN
 		UPDATE RESERVATION
-		SET Cost = Cost - OLD.high_price + NEW.high_price - OLD.low_price + NEW.low_price
+		SET Cost = Cost - OLD.high_price + NEW.high_price
 		WHERE reservation_number IN 
 		(
 			SELECT Reservation_Number
 			FROM reservation_detail RD LEFT JOIN flight F
             ON RD.flight_number = F.flight_number
 		) AND ticketed = 'N';
+        END IF;
+
+        IF NEW.low_price != OLD.low_price THEN
+		UPDATE RESERVATION
+		SET Cost = Cost - OLD.low_price + NEW.low_price
+		WHERE reservation_number IN 
+		(
+			SELECT Reservation_Number
+			FROM reservation_detail RD LEFT JOIN flight F
+            ON RD.flight_number = F.flight_number
+		) AND ticketed = 'N';
+        END IF;
+
+
         RETURN NEW;
 END;
 $$ language plpgsql;
