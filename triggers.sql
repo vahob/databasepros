@@ -2,9 +2,11 @@
 
 --Q5 planeUpgrade Trigger
 --Trigger Function for upgrading Plane
-CREATE OR REPLACE TRIGGER adjustTicket
+
+DROP TRIGGER IF EXISTS adjustTicket ON price;
+CREATE TRIGGER adjustTicket
 BEFORE UPDATE OF high_price, low_price
-ON PRICE
+ON price
 FOR EACH ROW
 EXECUTE PROCEDURE adjustCost();
 
