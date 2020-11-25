@@ -102,6 +102,8 @@ BEGIN
 			SELECT Reservation_Number
 			FROM reservation_detail RD LEFT JOIN flight F
             ON RD.flight_number = F.flight_number
+            WHERE departure_city = new.departure_city
+            AND arrival_city= NEW.arrival_city
 		) AND ticketed = 'N';
         END IF;
 
@@ -113,6 +115,8 @@ BEGIN
 			SELECT Reservation_Number
 			FROM reservation_detail RD LEFT JOIN flight F
             ON RD.flight_number = F.flight_number
+            WHERE departure_city = new.departure_city
+            AND arrival_city= NEW.arrival_city
 		) AND ticketed = 'N';
         END IF;
 
