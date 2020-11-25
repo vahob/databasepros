@@ -129,10 +129,7 @@ SELECT isPlaneFull(1, TO_TIMESTAMP('2020-11-02 13:56:00', 'YYYY-MM-DD HH24:MI'):
 -- should return true with error message
 
 
--- Q4 makeReservation Procedure
 
--- Q4 Helper Functions
--- Check if the reservation exit and if the flight exist
 CREATE OR REPLACE FUNCTION validateReservationInfo(reservation_num integer, flight_num integer)
     RETURNS BOOLEAN AS
 $$
@@ -161,10 +158,9 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
---TEST: Check this function is working as expected
 
-SELECT validateReservationInfo(1, 1); -- should return true
-SELECT validateReservationInfo(1, 4); -- should return false
+
+
 
 -- Get a letter if there is a flight or '-' if there isn't one
 CREATE OR REPLACE FUNCTION getDayLetterFromSchedule(departure_date date, flight_num integer)
@@ -189,9 +185,7 @@ BEGIN
 END;
 $$ language plpgsql;
 
---TEST: Check this function is working as expected
-SELECT getDayLetterFromSchedule(TO_DATE('2020-11-03', 'YYYY-MM-DD'), 1); -- should return T
-SELECT getDayLetterFromSchedule(TO_DATE('2020-11-01', 'YYYY-MM-DD'), 1); -- should return S
+
 
 -- Calculate the departure time based on the date and the flight schedule
 CREATE OR REPLACE FUNCTION getCalculatedDepartureDate(departure_date date, flight_num integer)
@@ -211,10 +205,8 @@ BEGIN
 END;
 $$ language plpgsql;
 
---TEST: Check this function is working as expected
-SELECT getCalculatedDepartureDate(TO_DATE('2020-11-03', 'YYYY-MM-DD'), 1); -- should return M
 
--- Q4 makeReservation Procedure
+
 CREATE OR REPLACE PROCEDURE makeReservation(reservation_num integer, flight_num integer, departure_date date,
                                             leg_trip integer)
 AS
@@ -248,13 +240,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
---TEST: make a reservation to check procedure
-BEGIN;
-CALL makeReservation(4, 1, to_date('11-01-2020', 'MM-DD-YYYY'), 3); -- ok
-END;
-BEGIN;
-CALL makeReservation(5, 1, to_date('11-01-2020', 'MM-DD-YYYY'), 3); -- Error
-END;
+
 
 
 

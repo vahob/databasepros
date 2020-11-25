@@ -8,7 +8,7 @@ import java.util.*;
 import java.io.*;
 import java.sql.*;
 
-public class Interface
+public class team02
 {
     static Connection conn;
     static Scanner input = new Scanner(System.in);
@@ -862,7 +862,7 @@ public class Interface
             System.out.println("Routes with one connection between " + cityA + " and " + cityB);
             if(!res.next())
             {
-                System.out.println("No direct routes were found.");
+                System.out.println("No one connection routes were found.");
             } else {
                 do {
                     System.out.println("++++ Route " + res.getRow()+ "++++++++++");
@@ -1151,6 +1151,7 @@ public class Interface
                 }               
                 
             }
+            input.nextLine(); // clears buffer
 
         } catch (SQLException e) {
             e.printStackTrace();
