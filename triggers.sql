@@ -2,6 +2,14 @@
 
 --Q5 planeUpgrade Trigger
 --Trigger Function for upgrading Plane
+CREATE OR REPLACE TRIGGER adjustTicket
+BEFORE UPDATE OF high_price, low_price
+ON PRICE
+FOR EACH ROW
+EXECUTE PROCEDURE adjustCost();
+
+
+
 CREATE OR REPLACE PROCEDURE upgradePlaneHelper(flight_num integer, flight_time timestamp) AS
 $$
 DECLARE
