@@ -2,6 +2,13 @@
 
 --Q5 planeUpgrade Trigger
 --Trigger Function for upgrading Plane
+DROP TRIGGER IF EXISTS frequetFlyer ON reservation;
+CREATE TRIGGER frequentFlyer
+BEFORE UPDATE OF ticketed
+ON reservation
+FOR EACH ROW
+EXECUTE PROCEDURE updateFrequentMiles();
+
 
 
 CREATE OR REPLACE FUNCTION adjustCost()
