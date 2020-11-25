@@ -107,6 +107,13 @@ BEGIN
 END;
 $$ language plpgsql;
 
+DROP TRIGGER IF EXISTS planeDowngrade ON RESERVATION_DETAIL;
+CREATE TRIGGER planeDowngrade
+    BEFORE DELETE
+    ON RESERVATION_DETAIL
+    FOR EACH ROW
+EXECUTE PROCEDURE downgradePlane();
+
 --Q6 cancelReservation Trigger
 CREATE OR REPLACE PROCEDURE downgradePlaneHelper(flight_num integer, flight_time timestamp)
 AS
