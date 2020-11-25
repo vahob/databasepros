@@ -7,7 +7,7 @@
 
 CREATE OR REPLACE VIEW CustomersWithLegPerAirline
 AS
-SELECT DISTINCT ON (G.cid) G.cid, SUM(S) AS W, airline_abbreviation
+SELECT G.cid, SUM(S) AS W, airline_abbreviation
 FROM (SELECT S, CID, flight_number, D.airline_id AS airline_id, A.airline_abbreviation AS airline_abbreviation
 FROM (SELECT S, CID, T.flight_number AS flight_number, F.airline_id AS airline_id
 FROM (SELECT count(leg) AS S, cid, flight_number
