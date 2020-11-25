@@ -3,6 +3,23 @@
 --Q5 planeUpgrade Trigger
 --Trigger Function for upgrading Plane
 
+CREATE OR REPLACE VIEW CustomerWithMostFaresPerAirline
+AS
+SELECT G.CID, S, airline_abbreviation
+FROM
+(SELECT S, CID, flight_number, D.airline_id AS airline_id, A.airline_abbreviation AS airline_abbreviation
+FROM
+(SELECT S, CID, T.flight_number AS flight_number, F.airline_id AS airline_id
+FROM
+(SELECT sum(R.cost) as S, R.CID AS CID, RD.flight_number AS flight_number
+FROM reservation_detail RD LEFT JOIN reservation R
+ON RD.reservation_number = R.reservation_number
+GROUP BY R.CID, RD.flight_number
+ORDER BY S DESC) T LEFT JOIN flight F ON T.flight_number = F.flight_number
+ORDER BY airline_id ASC, S DESC) AS D LEFT JOIN airline A
+ON D.airline_id = A.airline_id) AS G LEFT JOIN customer C
+ON G.cid = C.cid GROUP BY G.CID, S, G.airline_abbreviation
+ORDER BY G.CID, S DESC;
 
 
 
