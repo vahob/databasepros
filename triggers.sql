@@ -63,10 +63,20 @@ BEGIN
         ORDER BY M DESC) T WHERE
         cid = 1 LIMIT 1; 
 
-	IF NEW.ticketed = TRUE AND count = 1
+		IF NEW.ticketed = TRUE AND count = 1
         THEN UPDATE customer
         SET frequent_miles = freq_miles
         WHERE CID = NEW.cid;
+        ELSE
+
+        SELECT airline_abbreviation INTO freq_miles FROM
+        (SELEct airline_abbreviation, MAX(S) M, cid 
+        FROM CustomersWithMostFaresPerAirline
+        GROUP BY CID, airline_abbreviation
+        ORDER BY M DESC) T WHERE
+        cid = 1 LIMIT 1;
+        END IF;
+
         RETURN NEW;
 END;
 $$ language plpgsql;
