@@ -5,6 +5,7 @@
 
 
 
+
 CREATE OR REPLACE VIEW CustomersWithLegPerAirline
 AS
 SELECT G.cid, SUM(S) AS W, airline_abbreviation
@@ -20,6 +21,38 @@ ON D.airline_id = A.airline_id) AS G LEFT JOIN customer C
 ON G.cid = C.cid
 GROUP BY G.CID, G.airline_abbreviation
 ORDER BY G.CID, W DESC;
+
+CREATE OR REPLACE FUNCTION updateFrequentMiles()
+    RETURNS TRIGGER AS
+$$
+DECLARE
+    count INTEGER;
+    freq_miles customer.frequent_miles%TYPE;
+        
+BEGIN
+        raise notice 'Updating frequent_miles';
+         
+        SELECT COUNT(CID) AS C INTO count
+        FROM (SELECT CID,W, R, airline_abbreviation
+        FROM (SELECT  RANK() OVER (PARTITION BY CID ORDER BY W DESC) AS R,
+        T.* FROM customerswithlegperairline T) X where X.R <= 2) S
+        WHERE CID = NEW.cid AND R = 1
+        GROUP BY CID;
+
+        SELECT airline_abbreviation INTO freq_miles FROM
+        (SELEct airline_abbreviation, MAX(W) M, cid 
+        FROM customerswithlegperairline
+        GROUP BY CID, airline_abbreviation
+        ORDER BY M DESC) T WHERE
+        cid = 1 LIMIT 1; 
+
+	IF NEW.ticketed = TRUE AND count = 1
+        THEN UPDATE customer
+        SET frequent_miles = freq_miles
+        WHERE CID = NEW.cid;
+        RETURN NEW;
+END;
+$$ language plpgsql;
 
 DROP TRIGGER IF EXISTS frequetFlyer ON reservation;
 CREATE TRIGGER frequentFlyer
